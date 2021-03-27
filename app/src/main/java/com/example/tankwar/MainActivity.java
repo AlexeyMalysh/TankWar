@@ -40,13 +40,19 @@ public class MainActivity extends AppCompatActivity {
 
         JoystickView joystick = initJoystick();
 
+
+
         layout.addView(tankWarView);
 
         layout.addView(joystick);
 
+
+
         // Update to new layout
         setContentView(layout);
     }
+
+
 
 
     // This method executes when the player starts the game
@@ -71,12 +77,17 @@ public class MainActivity extends AppCompatActivity {
     private JoystickView initJoystick() {
         JoystickView joystick = (JoystickView) findViewById(R.id.joystickView_left);
 
-        joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
-            @Override
-            public void onMove(int angle, int strength) {
-                tankWarView.onJoystickEvent(angle, strength);
-            }
-        });
+        joystick.setBackgroundSizeRatio((float) 0.5);
+        joystick.setButtonSizeRatio((float) 0.5);
+
+        joystick.setOnMoveListener((deg, strength) -> {
+            int x = (joystick.getNormalizedX()) - 50;
+            int y = (joystick.getNormalizedY()) - 50;
+
+
+            tankWarView.onJoystickEvent(deg, strength, x, y);
+        }, 8);
+
 
         if (joystick.getParent() != null) {
             ((ViewGroup) joystick.getParent()).removeView(joystick);

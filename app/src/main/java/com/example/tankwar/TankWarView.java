@@ -26,17 +26,20 @@ public class TankWarView extends SurfaceView implements Runnable {
     private boolean paused = true;
     private Canvas canvas;
     private Paint paint;
-    private long fps;
+    public static long fps;
     private long timeThisFrame;
     private int screenX;
     private int screenY;
-    private int angle;
-    private int strength;
 
     private Player player;
     private JoystickView joystick;
     private int score = 0;
     private int lives = 5;
+
+    private int deg;
+    private int strength;
+    private int x;
+    private int y;
 
 
     public TankWarView(Context context, int x, int y) {
@@ -57,11 +60,14 @@ public class TankWarView extends SurfaceView implements Runnable {
     }
 
 
-    public void onJoystickEvent(int angle, int strength) {
-        this.angle = angle;
-        this.strength = strength;
+    public void onJoystickEvent(int deg, int strength, int x, int y) {
 
-        player.setRotation(angle);
+        player.update(deg, strength, x, y);
+
+        this.deg = deg;
+        this.strength = strength;
+        this.x = x;
+        this.y = y;
     }
 
 
@@ -90,7 +96,7 @@ public class TankWarView extends SurfaceView implements Runnable {
 
 
     private void update() {
-        player.update();
+
     }
 
 
@@ -99,14 +105,19 @@ public class TankWarView extends SurfaceView implements Runnable {
         if (ourHolder.getSurface().isValid()) {
 
             canvas = ourHolder.lockCanvas();
-            canvas.drawColor(Color.argb(255, 26, 128, 182));
-            paint.setColor(Color.argb(255, 255, 255, 255));
-            paint.setColor(Color.argb(255, 249, 129, 0));
+            canvas.drawColor(Color.argb(255, 26, 255, 128));
+            paint.setColor(Color.argb(255, 0, 0, 0));
+            paint.setColor(Color.argb(255, 0, 0, 0));
             paint.setTextSize(40);
             canvas.drawText("Score: " + score + "   Lives: " + lives, 10, 50, paint);
             canvas.drawText("FPS:" + fps, 1250, 50, paint);
-            canvas.drawText("Angle: " + angle, 1500, 50, paint);
+            canvas.drawText("Degree: " + deg, 1500, 50, paint);
             canvas.drawText("Strength " + strength, 1750, 50, paint);
+            canvas.drawText("Joystick X: " + (x), 2000, 50, paint);
+            canvas.drawText("Joystick Y " + y, 2250, 50, paint);
+
+
+            canvas.drawText("Player X" + player.getX(), 2250, 500, paint);
 
             player.draw(canvas);
 

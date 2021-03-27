@@ -14,9 +14,14 @@ public class Player {
     private Paint paint;
     private float width;
     private float height;
-    private float x;
+    public float x;
     private float y;
     private float deg;
+
+    private float velocityX;
+    private int MAX_SPEED = 5;
+    private boolean initialised = false;
+
 
 
     public Player(Context context, int screenX, int screenY) {
@@ -33,16 +38,61 @@ public class Player {
 
     public void draw(Canvas canvas) {
 
+
         Matrix matrix = new Matrix();
 
-        matrix.postTranslate(x, y);
-
         matrix.setRotate(-deg, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
+
+        matrix.postTranslate(this.x, this.y);
+
+
+
+
 
         canvas.drawBitmap(bitmap, matrix, paint);
     }
 
-    public void update() {
+    public void update(int deg, int strength, int x, int y) {
+
+
+        // Prevents accidental presses and prevents player resetting when letting go
+        if (strength > 0) {
+
+            if(x > 10) {
+                this.x += 1;
+            } else if (x < -10) {
+                this.x -= 1;
+            }
+
+
+            if(y > 10) {
+                this.y += 1;
+            } else if(y < -10) {
+                this.y -= 1;
+            }
+
+            setRotation(deg);
+
+        }
+
+
+
+
+
+//            if(x > 50) {
+//                matrix.postTranslate((this.x += strength) / 60, y);
+//            } else if(x < 50) {
+//                matrix.postTranslate((this.x -= strength) / 60, y);
+//            }
+//
+//
+//            if(y > 50) {
+//                matrix.postTranslate(x, (this.y += strength) / 60);
+//            } else if (y < 50) {
+//                matrix.postTranslate(x, (this.y -= strength) / 60);
+//            }
+//
+
 
     }
 
@@ -53,5 +103,9 @@ public class Player {
 
     public void setRotation(int deg) {
         this.deg = deg;
+    }
+
+    public float getX () {
+        return this.x;
     }
 }

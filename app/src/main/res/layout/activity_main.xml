@@ -10,26 +10,37 @@
     >
 
 
+<!--    <io.github.controlwear.virtual.joystick.android.JoystickView-->
+<!--        android:id="@+id/joystickView_left"-->
+<!--        android:layout_width="109dp"-->
+<!--        android:layout_height="130dp"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_marginStart="32dp"-->
+<!--        android:layout_marginLeft="32dp"-->
+<!--        android:layout_marginBottom="31dp"-->
+<!--        android:background="@drawable/joystick_background"-->
+<!--        app:JV_buttonImage="@drawable/joystick"-->
+<!--        app:JV_buttonSizeRatio="50%"-->
+<!--        app:JV_backgroundSizeRatio="50%"-->
+<!--        app:JV_fixedCenter="false"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+
     <io.github.controlwear.virtual.joystick.android.JoystickView
         android:id="@+id/joystickView_left"
-        android:layout_width="109dp"
-        android:layout_height="130dp"
+        android:layout_width="113dp"
+        android:layout_height="124dp"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="270dp"
-        android:layout_marginEnd="590dp"
-        android:layout_marginRight="590dp"
-        android:layout_marginBottom="176dp"
+        android:layout_marginStart="42dp"
+        android:layout_marginLeft="74dp"
+        android:layout_marginBottom="32dp"
         android:background="@drawable/joystick_background"
-        app:JV_buttonImage="@drawable/joystick"
-        app:JV_fixedCenter="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:JV_autoReCenterButton="true"
+        app:JV_buttonImage="@drawable/joystick" />
 
 
 </android.widget.RelativeLayout>
