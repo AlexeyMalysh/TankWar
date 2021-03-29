@@ -36,17 +36,15 @@ public class MainActivity extends AppCompatActivity {
         RelativeLayout layout = new RelativeLayout(getApplicationContext());
 
 
-        tankWarView = new TankWarView(getApplicationContext(), getScreenWidth(), getScreenHeight());
+        JoystickView joystickView = (JoystickView) findViewById(R.id.joystickView_left);
 
-        JoystickView joystick = initJoystick();
+        Joystick joystick = new Joystick(joystickView);
 
-
+        tankWarView = new TankWarView(getApplicationContext(), getScreenWidth(), getScreenHeight(), joystick);
 
         layout.addView(tankWarView);
 
-        layout.addView(joystick);
-
-
+        layout.addView(joystickView);
 
         // Update to new layout
         setContentView(layout);
@@ -73,28 +71,6 @@ public class MainActivity extends AppCompatActivity {
         tankWarView.pause();
     }
 
-
-    private JoystickView initJoystick() {
-        JoystickView joystick = (JoystickView) findViewById(R.id.joystickView_left);
-
-        joystick.setBackgroundSizeRatio((float) 0.5);
-        joystick.setButtonSizeRatio((float) 0.5);
-
-        joystick.setOnMoveListener((deg, strength) -> {
-            int x = (joystick.getNormalizedX()) - 50;
-            int y = (joystick.getNormalizedY()) - 50;
-
-
-            tankWarView.onJoystickEvent(deg, strength, x, y);
-        }, 8);
-
-
-        if (joystick.getParent() != null) {
-            ((ViewGroup) joystick.getParent()).removeView(joystick);
-        }
-
-        return joystick;
-    }
 
     public static int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;

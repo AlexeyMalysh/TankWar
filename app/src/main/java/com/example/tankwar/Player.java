@@ -10,102 +10,71 @@ import android.graphics.Paint;
 public class Player {
 
 
+    private float MAX_SPEED = 1.5f;
+    private int RELATIVE_WIDTH = 20;
+    private int SENSITIVITY_Y = 10;
+    private int SENSITIVITY_X = 10;
+
     private Bitmap bitmap;
     private Paint paint;
     private float width;
     private float height;
-    public float x;
-    private float y;
-    private float deg;
-
-    private float velocityX;
-    private int MAX_SPEED = 5;
+    private float positionX;
+    private float positionY;
+    private float degrees;
     private boolean initialised = false;
-
+    private Matrix matrix;
 
 
     public Player(Context context, int screenX, int screenY) {
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.tank_blue);
 
-        x = screenX / 2;
-        y = screenY / 2;
+        width =  screenX / RELATIVE_WIDTH;
 
-        width =  screenX / 20;
-        height =  screenX / 20;
+        bitmap = Bitmap.createScaledBitmap(bitmap, (int) width, (int) width, false);
 
-        bitmap = Bitmap.createScaledBitmap(bitmap, (int) width, (int) height, false);
+        matrix = new Matrix();
     }
 
     public void draw(Canvas canvas) {
-
-
-        Matrix matrix = new Matrix();
-
-        matrix.setRotate(-deg, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
-
-        matrix.postTranslate(this.x, this.y);
-
-
-
-
-
         canvas.drawBitmap(bitmap, matrix, paint);
     }
 
-    public void update(int deg, int strength, int x, int y) {
+    public float getPositionX () {
+        return this.positionX;
+    }
 
+    public float getPositionY () {
+        return this.positionY;
+    }
 
-        // Prevents accidental presses and prevents player resetting when letting go
-        if (strength > 0) {
+    public void update(int degrees, int joystickX, int joystickY) {
+            setRotation(degrees);
 
-            if(x > 10) {
-                this.x += 1;
-            } else if (x < -10) {
-                this.x -= 1;
-            }
+            setPosition(joystickX, joystickY);
+    }
 
+    private void setRotation(int degrees) {
+        this.degrees = degrees;
 
-            if(y > 10) {
-                this.y += 1;
-            } else if(y < -10) {
-                this.y -= 1;
-            }
+        matrix.setRotate(-this.degrees, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
+    }
 
-            setRotation(deg);
-
+    private void setPosition(int x, int y) {
+        if(x > SENSITIVITY_X) {
+            this.positionX += MAX_SPEED;
+        } else if (x < - SENSITIVITY_X) {
+            this.positionX -= MAX_SPEED;
         }
 
+        if(y > SENSITIVITY_Y) {
+            this.positionY += MAX_SPEED;
+        } else if(y < -SENSITIVITY_Y) {
+            this.positionY -= MAX_SPEED;
+        }
 
-
-
-
-//            if(x > 50) {
-//                matrix.postTranslate((this.x += strength) / 60, y);
-//            } else if(x < 50) {
-//                matrix.postTranslate((this.x -= strength) / 60, y);
-//            }
-//
-//
-//            if(y > 50) {
-//                matrix.postTranslate(x, (this.y += strength) / 60);
-//            } else if (y < 50) {
-//                matrix.postTranslate(x, (this.y -= strength) / 60);
-//            }
-//
-
-
+        matrix.postTranslate(this.positionX, this.positionY);
     }
 
-    public void setPosition(float x, float y) {
-        this.x = x;
-        this.y = y;
-    }
 
-    public void setRotation(int deg) {
-        this.deg = deg;
-    }
-
-    public float getX () {
-        return this.x;
-    }
 }
