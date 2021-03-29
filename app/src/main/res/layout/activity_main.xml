@@ -42,6 +42,17 @@
         app:JV_autoReCenterButton="true"
         app:JV_buttonImage="@drawable/joystick" />
 
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="72dp"
+        android:layout_marginBottom="56dp"
+        android:background="@null"
+        app:srcCompat="@drawable/fire_button_active" />
+
 
 </android.widget.RelativeLayout>
 

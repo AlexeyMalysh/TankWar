@@ -6,8 +6,12 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Debug;
+import android.util.Log;
 import android.view.Display;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -36,17 +40,30 @@ public class MainActivity extends AppCompatActivity {
         RelativeLayout layout = new RelativeLayout(getApplicationContext());
 
 
+        // Init joystick
         JoystickView joystickView = (JoystickView) findViewById(R.id.joystickView_left);
 
         Joystick joystick = new Joystick(joystickView);
 
-        tankWarView = new TankWarView(getApplicationContext(), getScreenWidth(), getScreenHeight(), joystick);
 
+        // Init fire button
+        ImageButton fireButtonView = (ImageButton) findViewById(R.id.imageButton);
+
+        FireButton fireButton = new FireButton(fireButtonView);
+
+
+        // Init game
+        tankWarView = new TankWarView(getApplicationContext(), getScreenWidth(), getScreenHeight(), joystick, fireButton);
+
+
+        // Add views
         layout.addView(tankWarView);
 
         layout.addView(joystickView);
 
-        // Update to new layout
+        layout.addView(fireButtonView);
+
+        // Update layout
         setContentView(layout);
     }
 

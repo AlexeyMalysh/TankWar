@@ -27,10 +27,13 @@ public class TankWarView extends SurfaceView implements Runnable {
     private int screenY;
     private Player player;
     private Joystick joystick;
+    private FireButton fireButton;
     private int score = 0;
     private int lives = 5;
 
-    public TankWarView(Context context, int playerX, int playerY, Joystick joystick) {
+
+
+    public TankWarView(Context context, int playerX, int playerY, Joystick joystick, FireButton fireButton) {
 
         super(context);
         this.context = context;
@@ -46,6 +49,9 @@ public class TankWarView extends SurfaceView implements Runnable {
 
         // Initialize joystick
         this.joystick = joystick;
+
+        // Initialize fire button
+        this.fireButton = fireButton;
 
         prepareLevel();
     }
@@ -79,6 +85,11 @@ public class TankWarView extends SurfaceView implements Runnable {
         // Only updates when joystick is being pressed
         if(joystick.getStrength() > 0) {
             player.update(joystick.getDegrees(), joystick.getPositionX(), joystick.getPositionY());
+        }
+
+        if(fireButton.isPressed()) {
+            player.fire();
+            fireButton.isPressed = false;
         }
     }
 
@@ -122,9 +133,12 @@ public class TankWarView extends SurfaceView implements Runnable {
         canvas.drawText("Score: " + score + "   Lives: " + lives, 10, 50, paint);
         canvas.drawText("FPS:" + fps, 400, 50, paint);
         canvas.drawText("Degrees: " + joystick.getDegrees(), 700, 50, paint);
-        canvas.drawText("Strength: " + joystick.getStrength(), 1000, 50, paint);
-        canvas.drawText("Joystick X: " + joystick.getPositionX(), 1300, 50, paint);
-        canvas.drawText("Joystick Y: " + joystick.getPositionY(), 1600, 50, paint);
+        canvas.drawText("Strength: " + joystick.getStrength(), 700, 100, paint);
+        canvas.drawText("Joystick X: " + joystick.getPositionX(), 1000, 50, paint);
+        canvas.drawText("Joystick Y: " + joystick.getPositionY(), 1000, 100, paint);
+        canvas.drawText("Player X: " + player.getPositionX(), 1300, 50, paint);
+        canvas.drawText("Player Y: " + player.getPositionY(), 1300, 100, paint);
+        canvas.drawText("Player Fired: " + player.DEBUG_FIRE_COUNT, 1700, 50, paint);
 
     }
 

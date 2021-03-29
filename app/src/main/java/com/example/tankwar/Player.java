@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.util.Log;
 
 import static com.example.tankwar.TankWarView.fps;
 
@@ -26,6 +27,8 @@ public class Player {
     private float degrees;
     private boolean initialised = false;
     private Matrix matrix;
+
+    public int DEBUG_FIRE_COUNT = 0;
 
 
     public Player(Context context, int screenX, int screenY) {
@@ -79,4 +82,7 @@ public class Player {
     }
 
 
+    public void fire() {
+        this.DEBUG_FIRE_COUNT += 1;
+    }
 }
