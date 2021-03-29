@@ -7,10 +7,12 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 
+import static com.example.tankwar.TankWarView.fps;
+
 public class Player {
 
 
-    private float MAX_SPEED = 1.5f;
+    private float MAX_SPEED = 60f;
     private int RELATIVE_WIDTH = 20;
     private int SENSITIVITY_Y = 10;
     private int SENSITIVITY_X = 10;
@@ -62,15 +64,15 @@ public class Player {
 
     private void setPosition(int x, int y) {
         if(x > SENSITIVITY_X) {
-            this.positionX += MAX_SPEED;
+            this.positionX += MAX_SPEED / fps;
         } else if (x < - SENSITIVITY_X) {
-            this.positionX -= MAX_SPEED;
+            this.positionX -= MAX_SPEED / fps;
         }
 
         if(y > SENSITIVITY_Y) {
-            this.positionY += MAX_SPEED;
+            this.positionY += MAX_SPEED / fps;
         } else if(y < -SENSITIVITY_Y) {
-            this.positionY -= MAX_SPEED;
+            this.positionY -= MAX_SPEED / fps;
         }
 
         matrix.postTranslate(this.positionX, this.positionY);
