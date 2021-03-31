@@ -24,7 +24,6 @@ public class Player {
     private float positionX;
     private float positionY;
     private float degrees;
-    private boolean initialised = false;
     private Matrix matrix;
 
     public int DEBUG_FIRE_COUNT = 0;
@@ -41,8 +40,6 @@ public class Player {
         this.positionY = positionY;
 
         matrix = new Matrix();
-
-
     }
 
     public void draw(Canvas canvas) {
@@ -60,7 +57,7 @@ public class Player {
     public void update(int degrees, int joystickX, int joystickY) {
             setRotation(degrees);
 
-            setPosition(joystickX, joystickY);
+            updatePosition(joystickX, joystickY);
     }
 
     private void setRotation(int degrees) {
@@ -69,25 +66,20 @@ public class Player {
         matrix.setRotate(-this.degrees, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
     }
 
-    private void setPosition(int x, int y) {
-
-        if(x > 0) {
+    private void updatePosition(int joystickX, int joystickY) {
+        if(joystickX > 0) {
             this.positionX += MAX_SPEED / fps;
-        } else if (x < 0) {
+        } else if (joystickX < 0) {
             this.positionX -= MAX_SPEED / fps;
         }
 
-        if(y > 0) {
+        if(joystickY > 0) {
             this.positionY += MAX_SPEED / fps;
-        } else if(y < 0) {
+        } else if(joystickY < 0) {
             this.positionY -= MAX_SPEED / fps;
         }
 
         matrix.postTranslate(this.positionX, this.positionY);
-    }
-
-    private void updatePosition() {
-
     }
 
 
