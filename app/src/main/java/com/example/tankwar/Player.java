@@ -21,7 +21,6 @@ public class Player {
     private Bitmap bitmap;
     private Paint paint;
     private float width;
-    private float height;
     private float positionX;
     private float positionY;
     private float degrees;
@@ -31,14 +30,19 @@ public class Player {
     public int DEBUG_FIRE_COUNT = 0;
 
 
-    public Player(Context context, int screenX, int screenY) {
+    public Player(Context context, int screenX, int positionX, int positionY) {
         bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.tank_blue);
 
         width =  screenX / RELATIVE_WIDTH;
 
         bitmap = Bitmap.createScaledBitmap(bitmap, (int) width, (int) width, false);
 
+        this.positionX = positionX;
+        this.positionY = positionY;
+
         matrix = new Matrix();
+
+
     }
 
     public void draw(Canvas canvas) {
@@ -66,19 +70,24 @@ public class Player {
     }
 
     private void setPosition(int x, int y) {
-        if(x > SENSITIVITY_X) {
+
+        if(x > 0) {
             this.positionX += MAX_SPEED / fps;
-        } else if (x < - SENSITIVITY_X) {
+        } else if (x < 0) {
             this.positionX -= MAX_SPEED / fps;
         }
 
-        if(y > SENSITIVITY_Y) {
+        if(y > 0) {
             this.positionY += MAX_SPEED / fps;
-        } else if(y < -SENSITIVITY_Y) {
+        } else if(y < 0) {
             this.positionY -= MAX_SPEED / fps;
         }
 
         matrix.postTranslate(this.positionX, this.positionY);
+    }
+
+    private void updatePosition() {
+
     }
 
 

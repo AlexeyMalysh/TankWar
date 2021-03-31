@@ -1,54 +1,35 @@
 package com.example.tankwar;
 
 import android.annotation.SuppressLint;
-import android.os.Handler;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import java.util.function.Function;
-
 public class FireButton {
 
-    private ImageButton fireButton;
-    public boolean isPressed = false;
+    public ImageButton view;
+    public boolean isActive = false;
 
     @SuppressLint("ClickableViewAccessibility")
     public FireButton(ImageButton fireButtonView) {
-        this.fireButton = fireButtonView;
+        this.view = fireButtonView;
 
-        if (fireButton.getParent() != null) {
-            ((ViewGroup) fireButton.getParent()).removeView(fireButton);
+        if (view.getParent() != null) {
+            ((ViewGroup) view.getParent()).removeView(view);
         }
-
-        fireButton.setOnTouchListener((v, event) -> {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    this.isPressed = true;
-                    toggleButton();
-                    return true;
-                case  MotionEvent.ACTION_UP:
-                    this.isPressed = false;
-                    toggleButton();
-                    return true;
-            }
-
-            return true;
-        });
     }
 
-    private void toggleButton() {
-        if(this.isPressed) {
-            fireButton.setImageResource(R.drawable.fire_button_inactive);
-            return;
-        }
+    public void toggle() {
 
-        fireButton.setImageResource(R.drawable.fire_button_active);
+        this.isActive = !this.isActive;
+
+        toggleImage();
     }
 
-    public boolean isPressed() {
-        return this.isPressed;
+    private void toggleImage() {
+        int imageId = this.isActive ? R.drawable.fire_button_inactive : R.drawable.fire_button_active;
+
+        view.setImageResource(imageId);
     }
+
 }
+

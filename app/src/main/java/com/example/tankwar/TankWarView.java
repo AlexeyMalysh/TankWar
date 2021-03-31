@@ -1,14 +1,14 @@
 package com.example.tankwar;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
-import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 
 public class TankWarView extends SurfaceView implements Runnable {
@@ -45,7 +45,7 @@ public class TankWarView extends SurfaceView implements Runnable {
         screenY = playerY;
 
         // Initialize player
-        player = new Player(context, screenX, screenY);
+        player = new Player(context, screenX, 500, 500);
 
         // Initialize joystick
         this.joystick = joystick;
@@ -53,12 +53,9 @@ public class TankWarView extends SurfaceView implements Runnable {
         // Initialize fire button
         this.fireButton = fireButton;
 
+        initFireButton();
+
         prepareLevel();
-    }
-
-
-    private void prepareLevel() {
-
     }
 
     @Override
@@ -80,17 +77,28 @@ public class TankWarView extends SurfaceView implements Runnable {
         }
     }
 
+    public void pause() {
+        playing = false;
+        try {
+            gameThread.join();
+        } catch (InterruptedException e) {
+            Log.e("Error:", "joining thread");
+        }
+    }
+
+    public void resume() {
+        playing = true;
+        gameThread = new Thread(this);
+        gameThread.start();
+    }
+
+
+    private void prepareLevel() {
+
+    }
 
     private void update() {
-        // Only updates when joystick is being pressed
-        if(joystick.getStrength() > 0) {
-            player.update(joystick.getDegrees(), joystick.getPositionX(), joystick.getPositionY());
-        }
-
-        if(fireButton.isPressed()) {
-            player.fire();
-            fireButton.isPressed = false;
-        }
+        player.update(joystick.getDegrees(), joystick.getPositionX(), joystick.getPositionY());
     }
 
 
@@ -110,23 +118,27 @@ public class TankWarView extends SurfaceView implements Runnable {
         }
     }
 
-    public void pause() {
-        playing = false;
-        try {
-            gameThread.join();
-        } catch (InterruptedException e) {
-            Log.e("Error:", "joining thread");
-        }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void initFireButton() {
+
+        fireButton.view.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    player.fire();
+                    fireButton.toggle();
+                    return true;
+                case  MotionEvent.ACTION_UP:
+                    fireButton.toggle();
+                    return true;
+            }
+
+            return true;
+        });
     }
 
-    public void resume() {
-        playing = true;
-        gameThread = new Thread(this);
-        gameThread.start();
-    }
 
     private void debugOverlay() {
-
         paint.setColor(Color.argb(255, 0, 0, 0));
         paint.setColor(Color.argb(255, 0, 0, 0));
         paint.setTextSize(40);
@@ -139,7 +151,6 @@ public class TankWarView extends SurfaceView implements Runnable {
         canvas.drawText("Player X: " + player.getPositionX(), 1300, 50, paint);
         canvas.drawText("Player Y: " + player.getPositionY(), 1300, 100, paint);
         canvas.drawText("Player Fired: " + player.DEBUG_FIRE_COUNT, 1700, 50, paint);
-
     }
 
 }

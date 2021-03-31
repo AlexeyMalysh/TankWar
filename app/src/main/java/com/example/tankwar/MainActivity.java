@@ -39,35 +39,25 @@ public class MainActivity extends AppCompatActivity {
         // Allows two views on same layout
         RelativeLayout layout = new RelativeLayout(getApplicationContext());
 
-
         // Init joystick
-        JoystickView joystickView = (JoystickView) findViewById(R.id.joystickView_left);
-
+        JoystickView joystickView = findViewById(R.id.joystickView_left);
         Joystick joystick = new Joystick(joystickView);
 
-
         // Init fire button
-        ImageButton fireButtonView = (ImageButton) findViewById(R.id.imageButton);
-
+        ImageButton fireButtonView = findViewById(R.id.imageButton);
         FireButton fireButton = new FireButton(fireButtonView);
-
 
         // Init game
         tankWarView = new TankWarView(getApplicationContext(), getScreenWidth(), getScreenHeight(), joystick, fireButton);
 
-
         // Add views
         layout.addView(tankWarView);
-
         layout.addView(joystickView);
-
         layout.addView(fireButtonView);
 
         // Update layout
         setContentView(layout);
     }
-
-
 
 
     // This method executes when the player starts the game
@@ -88,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         tankWarView.pause();
     }
 
-
     public static int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
@@ -96,6 +85,5 @@ public class MainActivity extends AppCompatActivity {
     public static int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
-
 
 }
