@@ -1,7 +1,6 @@
 package com.example.tankwar;
 
 import android.content.Context;
-import android.util.Log;
 
 import static com.example.tankwar.TankWarView.fps;
 
@@ -11,6 +10,7 @@ public class Bullet extends GameObject {
     private static final float MAX_SPEED = 500f;
     private float radianY;
     private float radianX;
+    public boolean isActive = true;
 
     public Bullet(Context context, float positionX, float positionY, int playerWidth, int playerHeight, int rotation) {
         super(context, R.drawable.bullet_blue, positionX, positionY);

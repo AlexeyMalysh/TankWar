@@ -1,13 +1,16 @@
 package com.example.tankwar;
 
 import android.annotation.SuppressLint;
+import android.os.Looper;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 public class FireButton {
 
+    private final int DELAY_MILLISECONDS = 1000;
     public ImageButton view;
-    public boolean isActive = false;
+
+
 
     @SuppressLint("ClickableViewAccessibility")
     public FireButton(ImageButton fireButtonView) {
@@ -19,14 +22,19 @@ public class FireButton {
     }
 
     public void toggle() {
+        view.setEnabled(false);
+        updateImage(false);
 
-        this.isActive = !this.isActive;
-
-        toggleImage();
+        new android.os.Handler(Looper.getMainLooper()).postDelayed(
+                () -> {
+                    view.setEnabled(true);
+                    updateImage(true);
+                },
+                DELAY_MILLISECONDS);
     }
 
-    private void toggleImage() {
-        int imageId = this.isActive ? R.drawable.fire_button_inactive : R.drawable.fire_button_active;
+    private void updateImage(boolean isActive) {
+        int imageId = isActive ? R.drawable.fire_button_active : R.drawable.fire_button_inactive;
 
         view.setImageResource(imageId);
     }

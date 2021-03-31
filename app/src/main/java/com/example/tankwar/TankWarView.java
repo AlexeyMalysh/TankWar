@@ -11,6 +11,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -28,7 +29,7 @@ public class TankWarView extends SurfaceView implements Runnable {
     private Player player;
     private Joystick joystick;
     private FireButton fireButton;
-    private List<Bullet> activeBullets = new ArrayList<>();
+    private Iterator<Bullet> activeBullets;
 
     public TankWarView(Context context, int screenX, int screenY, Joystick joystick, FireButton fireButton) {
         super(context);
@@ -92,7 +93,7 @@ public class TankWarView extends SurfaceView implements Runnable {
     private void update() {
         player.update();
 
-        for(Bullet bullet : player.getBullets()) {
+        for (Bullet bullet : player.bullets) {
             bullet.update();
         }
     }
@@ -108,15 +109,11 @@ public class TankWarView extends SurfaceView implements Runnable {
 
             debugOverlay();
 
-            // Order of drawing is important, last drawn is on top
-            for(Bullet bullet : player.getBullets()) {
+            for (Bullet bullet : player.bullets) {
                 bullet.draw(canvas);
             }
 
-
             player.draw(canvas);
-
-
 
             ourHolder.unlockCanvasAndPost(canvas);
         }
@@ -130,9 +127,6 @@ public class TankWarView extends SurfaceView implements Runnable {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     player.fire();
-                    fireButton.toggle();
-                    return true;
-                case MotionEvent.ACTION_UP:
                     fireButton.toggle();
                     return true;
             }
@@ -153,7 +147,7 @@ public class TankWarView extends SurfaceView implements Runnable {
         canvas.drawText("Joystick Y: " + joystick.getPositionY(), 1000, 100, paint);
         canvas.drawText("Player X: " + player.getPositionX(), 1300, 50, paint);
         canvas.drawText("Player Y: " + player.getPositionY(), 1300, 100, paint);
-        canvas.drawText("Bullets On Screen: " + player.getBullets().size(), 700, 150, paint);
+        canvas.drawText("Bullets On Screen: " + player.bullets.size(), 700, 150, paint);
     }
 
 }

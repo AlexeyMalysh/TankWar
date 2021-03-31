@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.example.tankwar.TankWarView.fps;
 
@@ -12,7 +13,7 @@ public class Player extends GameObject {
     private final float MAX_SPEED = 60f;
     private Joystick joystick;
     private Context context;
-    private List<Bullet> bullets = new ArrayList<>();
+    public CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<>();
 
     public Player(Context context, Joystick joystick, int imageId, float positionX, float positionY) {
         super(context, imageId, positionX, positionY);
@@ -49,7 +50,5 @@ public class Player extends GameObject {
         bullets.add(bullet);
     }
 
-    public List<Bullet> getBullets() {
-        return this.bullets;
-    }
+
 }
