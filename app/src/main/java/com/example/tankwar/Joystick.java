@@ -14,10 +14,10 @@ public class Joystick {
     private final int CENTER_POSITION = 50;
     private final int LOOP_INTERVAL = 8;
 
-    private int positionX;
-    private int positionY;
-    private int degrees;
-    private int strength;
+    private int positionX = 0;
+    private int positionY = 0;
+    private int degrees = 0;
+    private int strength = 0;
     private JoystickView joystick;
 
 

@@ -13,8 +13,6 @@ import android.view.SurfaceView;
 
 public class TankWarView extends SurfaceView implements Runnable {
 
-
-    private Context context;
     private Thread gameThread = null;
     private SurfaceHolder ourHolder;
     private volatile boolean playing;
@@ -23,36 +21,27 @@ public class TankWarView extends SurfaceView implements Runnable {
     private Paint paint;
     public static long fps;
     private long timeThisFrame;
-    private int screenX;
-    private int screenY;
     private Player player;
     private Joystick joystick;
     private FireButton fireButton;
-    private int score = 0;
-    private int lives = 5;
 
 
-
-    public TankWarView(Context context, int playerX, int playerY, Joystick joystick, FireButton fireButton) {
-
+    public TankWarView(Context context, int screenX, int screenY, Joystick joystick, FireButton fireButton) {
         super(context);
-        this.context = context;
 
         ourHolder = getHolder();
         paint = new Paint();
 
-        screenX = playerX;
-        screenY = playerY;
-
-        // Initialize player
-        player = new Player(context, screenX, 500, 500);
-
         // Initialize joystick
         this.joystick = joystick;
 
-        // Initialize fire button
-        this.fireButton = fireButton;
+        int playerWidth = screenX / 20;
+        int centerX = screenX / 2;
+        int centerY = screenY / 2;
 
+        player = new Player(context, joystick, R.drawable.tank_blue, playerWidth, playerWidth, centerX, centerY);
+
+        this.fireButton = fireButton;
         initFireButton();
 
         prepareLevel();
@@ -98,7 +87,7 @@ public class TankWarView extends SurfaceView implements Runnable {
     }
 
     private void update() {
-        player.update(joystick.getDegrees(), joystick.getPositionX(), joystick.getPositionY());
+        player.update();
     }
 
 
@@ -128,7 +117,7 @@ public class TankWarView extends SurfaceView implements Runnable {
                     player.fire();
                     fireButton.toggle();
                     return true;
-                case  MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_UP:
                     fireButton.toggle();
                     return true;
             }
@@ -142,7 +131,6 @@ public class TankWarView extends SurfaceView implements Runnable {
         paint.setColor(Color.argb(255, 0, 0, 0));
         paint.setColor(Color.argb(255, 0, 0, 0));
         paint.setTextSize(40);
-        canvas.drawText("Score: " + score + "   Lives: " + lives, 10, 50, paint);
         canvas.drawText("FPS:" + fps, 400, 50, paint);
         canvas.drawText("Degrees: " + joystick.getDegrees(), 700, 50, paint);
         canvas.drawText("Strength: " + joystick.getStrength(), 700, 100, paint);
@@ -150,7 +138,6 @@ public class TankWarView extends SurfaceView implements Runnable {
         canvas.drawText("Joystick Y: " + joystick.getPositionY(), 1000, 100, paint);
         canvas.drawText("Player X: " + player.getPositionX(), 1300, 50, paint);
         canvas.drawText("Player Y: " + player.getPositionY(), 1300, 100, paint);
-        canvas.drawText("Player Fired: " + player.DEBUG_FIRE_COUNT, 1700, 50, paint);
     }
 
 }

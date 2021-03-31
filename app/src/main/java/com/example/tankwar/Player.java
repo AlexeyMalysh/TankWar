@@ -10,80 +10,42 @@ import android.util.Log;
 
 import static com.example.tankwar.TankWarView.fps;
 
-public class Player {
+public class Player extends GameObject {
 
 
     private float MAX_SPEED = 60f;
-    private int RELATIVE_WIDTH = 20;
-    private int SENSITIVITY_Y = 10;
-    private int SENSITIVITY_X = 10;
-
-    private Bitmap bitmap;
-    private Paint paint;
-    private float width;
-    private float positionX;
-    private float positionY;
-    private float degrees;
-    private Matrix matrix;
-
-    public int DEBUG_FIRE_COUNT = 0;
+    private Joystick joystick;
 
 
-    public Player(Context context, int screenX, int positionX, int positionY) {
-        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.tank_blue);
-
-        width =  screenX / RELATIVE_WIDTH;
-
-        bitmap = Bitmap.createScaledBitmap(bitmap, (int) width, (int) width, false);
-
-        this.positionX = positionX;
-        this.positionY = positionY;
-
-        matrix = new Matrix();
+    public Player(Context context, Joystick joystick, int imageId, int width, int height, float positionX, float positionY) {
+        super(context, imageId, width, height, positionX, positionY);
+        this.joystick = joystick;
     }
 
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(bitmap, matrix, paint);
-    }
+    public void update() {
+        setRotation(joystick.getDegrees());
 
-    public float getPositionX () {
-        return this.positionX;
-    }
+        int joystickX = joystick.getPositionX();
+        int joystickY = joystick.getPositionY();
 
-    public float getPositionY () {
-        return this.positionY;
-    }
-
-    public void update(int degrees, int joystickX, int joystickY) {
-            setRotation(degrees);
-
-            updatePosition(joystickX, joystickY);
-    }
-
-    private void setRotation(int degrees) {
-        this.degrees = degrees;
-
-        matrix.setRotate(-this.degrees, bitmap.getWidth() / 2, bitmap.getHeight() / 2);
-    }
-
-    private void updatePosition(int joystickX, int joystickY) {
-        if(joystickX > 0) {
-            this.positionX += MAX_SPEED / fps;
+        if (joystickX > 0) {
+            setPositionX(positionX + MAX_SPEED / fps);
         } else if (joystickX < 0) {
-            this.positionX -= MAX_SPEED / fps;
+            setPositionX(positionX - MAX_SPEED / fps);
         }
 
-        if(joystickY > 0) {
-            this.positionY += MAX_SPEED / fps;
-        } else if(joystickY < 0) {
-            this.positionY -= MAX_SPEED / fps;
+        if (joystickY > 0) {
+            setPositionY(positionY + MAX_SPEED / fps);
+        } else if (joystickY < 0) {
+            setPositionY(positionY - MAX_SPEED / fps);
         }
 
-        matrix.postTranslate(this.positionX, this.positionY);
+        updateRotation();
+        updatePosition();
     }
 
 
     public void fire() {
-        this.DEBUG_FIRE_COUNT += 1;
+
     }
 }
