@@ -79,11 +79,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static int getScreenWidth() {
-        return Resources.getSystem().getDisplayMetrics().widthPixels;
+        return Math.round(Resources.getSystem().getDisplayMetrics().widthPixels);
     }
 
     public static int getScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
+        return Math.round(Resources.getSystem().getDisplayMetrics().heightPixels);
+    }
+
+    public static float getDensity() {
+        return  Resources.getSystem().getDisplayMetrics().density;
     }
 
 }

@@ -1,25 +1,23 @@
 package com.example.tankwar;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.tankwar.TankWarView.fps;
 
 public class Player extends GameObject {
 
-
-    private float MAX_SPEED = 60f;
+    private final float MAX_SPEED = 60f;
     private Joystick joystick;
+    private Context context;
+    private List<Bullet> bullets = new ArrayList<>();
 
-
-    public Player(Context context, Joystick joystick, int imageId, int width, int height, float positionX, float positionY) {
-        super(context, imageId, width, height, positionX, positionY);
+    public Player(Context context, Joystick joystick, int imageId, float positionX, float positionY) {
+        super(context, imageId, positionX, positionY);
         this.joystick = joystick;
+        this.context = context;
     }
 
     public void update() {
@@ -46,6 +44,12 @@ public class Player extends GameObject {
 
 
     public void fire() {
+        Bullet bullet = new Bullet(context, getPositionX(), getPositionY(), getWidth(), getHeight(), rotation);
 
+        bullets.add(bullet);
+    }
+
+    public List<Bullet> getBullets() {
+        return this.bullets;
     }
 }
