@@ -6,29 +6,31 @@ import static com.example.tankwar.TankWarView.fps;
 
 public class Bullet extends GameObject {
 
+    private static final float MAX_SPEED = 1000f;
 
-    private static final float MAX_SPEED = 500f;
-    private float radianY;
     private float radianX;
-    public boolean isActive = true;
+    private float radianY;
 
-    public Bullet(Context context, float positionX, float positionY, int playerWidth, int playerHeight, int rotation) {
+
+    public Bullet(Context context, float positionX, float positionY, int playerWidth, int playerHeight, float degrees, Joystick joystick) {
+
+        // TODO: This may need refactoring to allow for different colour bullets
         super(context, R.drawable.bullet_blue, positionX, positionY);
 
+        this.radianX = joystick.getPositionX();
+        this.radianY = joystick.getPositionY();
 
-        this.radianY = (float) Math.sin(rotation * Math.PI / 180);
-        this.radianX = (float) Math.cos(rotation * Math.PI / 180);
-
+        // Calculates center of tank
         float centerX = getPositionX() + (playerWidth / 2) - (getWidth() / 2);
         float centerY = getPositionY() + (playerHeight / 2) - (getHeight() / 2);
 
-        // Places bullet outside of tanks shell
+        // Places bullet in front of tanks gun
         setPositionX(centerX + (playerWidth * (radianX / 2)));
         setPositionY(centerY - (playerHeight * (radianY / 2)));
 
-        setRotation(rotation);
+        // Set initial degrees, this will stay the same through bullets life
+        setDegrees(degrees);
 
-        // Initialises bullet position and rotation
         updateRotation();
         updatePosition();
     }

@@ -10,7 +10,7 @@ import android.graphics.Paint;
 public abstract class GameObject {
     protected float positionX;
     protected float positionY;
-    protected int rotation;
+    protected float degrees;
     protected Matrix matrix;
     protected Bitmap bitmap;
     private Paint paint;
@@ -22,15 +22,20 @@ public abstract class GameObject {
         this.matrix = new Matrix();
 
         this.bitmap = BitmapFactory.decodeResource(context.getResources(), imageId);
+
+        // TODO: Height and width should be scaled to device dimensions
         this.bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() / 2), (int) (bitmap.getHeight() / 2), false);
     }
 
+    // Update logic must be implemented for each GameObject
     public abstract void update();
 
+    //    Every GameObject must be drawn in TankWarView
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, matrix, paint);
     }
 
+    //    Helper methods
     public float getPositionY() {
         return positionY;
     }
@@ -47,16 +52,12 @@ public abstract class GameObject {
         this.positionY = y;
     }
 
-    public void setRotation(int degrees) {
-        this.rotation = degrees;
+    public float getDegrees() {
+        return degrees;
     }
 
-    public void updatePosition() {
-        matrix.postTranslate(positionX, positionY);
-    }
-
-    public void updateRotation() {
-        matrix.setRotate(-rotation, getWidth() / 2, getHeight() / 2);
+    public void setDegrees(float degrees) {
+        this.degrees = degrees;
     }
 
     public int getWidth() {
@@ -67,5 +68,21 @@ public abstract class GameObject {
         return bitmap.getHeight();
     }
 
+    public float getCenterX() {
+        return (float) getWidth() / 2;
+    }
+
+    public float getCenterY() {
+        return (float) getHeight() / 2;
+    }
+
+    // Draw updates
+    public void updatePosition() {
+        matrix.postTranslate(positionX, positionY);
+    }
+
+    public void updateRotation() {
+        matrix.setRotate(-degrees, (float) getWidth() / 2, (float) getHeight() / 2);
+    }
 
 }

@@ -29,7 +29,6 @@ public class TankWarView extends SurfaceView implements Runnable {
     private Player player;
     private Joystick joystick;
     private FireButton fireButton;
-    private Iterator<Bullet> activeBullets;
 
     public TankWarView(Context context, int screenX, int screenY, Joystick joystick, FireButton fireButton) {
         super(context);
@@ -93,7 +92,7 @@ public class TankWarView extends SurfaceView implements Runnable {
     private void update() {
         player.update();
 
-        for (Bullet bullet : player.bullets) {
+        for (Bullet bullet : player.getBullets()) {
             bullet.update();
         }
     }
@@ -109,7 +108,7 @@ public class TankWarView extends SurfaceView implements Runnable {
 
             debugOverlay();
 
-            for (Bullet bullet : player.bullets) {
+            for (Bullet bullet : player.getBullets()) {
                 bullet.draw(canvas);
             }
 
@@ -145,9 +144,9 @@ public class TankWarView extends SurfaceView implements Runnable {
         canvas.drawText("Strength: " + joystick.getStrength(), 700, 100, paint);
         canvas.drawText("Joystick X: " + joystick.getPositionX(), 1000, 50, paint);
         canvas.drawText("Joystick Y: " + joystick.getPositionY(), 1000, 100, paint);
-        canvas.drawText("Player X: " + player.getPositionX(), 1300, 50, paint);
-        canvas.drawText("Player Y: " + player.getPositionY(), 1300, 100, paint);
-        canvas.drawText("Bullets On Screen: " + player.bullets.size(), 700, 150, paint);
+        canvas.drawText("Player X: " + player.getPositionX(), 1500, 50, paint);
+        canvas.drawText("Player Y: " + player.getPositionY(), 1500, 100, paint);
+        canvas.drawText("Bullets On Screen: " + player.getBullets().size(), 700, 150, paint);
     }
 
 }

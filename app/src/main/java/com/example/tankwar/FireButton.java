@@ -10,8 +10,6 @@ public class FireButton {
     private final int DELAY_MILLISECONDS = 1000;
     public ImageButton view;
 
-
-
     @SuppressLint("ClickableViewAccessibility")
     public FireButton(ImageButton fireButtonView) {
         this.view = fireButtonView;
