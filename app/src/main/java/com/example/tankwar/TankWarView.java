@@ -25,7 +25,6 @@ public class TankWarView extends SurfaceView implements Runnable {
     private Paint paint;
     public static long fps;
     private long timeThisFrame;
-
     private Player player;
     private Joystick joystick;
     private FireButton fireButton;
@@ -39,8 +38,8 @@ public class TankWarView extends SurfaceView implements Runnable {
         // Initialize joystick
         this.joystick = joystick;
 
-        int centerX = screenX / 2;
-        int centerY = screenY / 2;
+        float centerX = (float) screenX / 2;
+        float centerY = (float) screenY / 2;
 
         player = new Player(context, joystick, R.drawable.tank_blue, centerX, centerY);
 
@@ -90,13 +89,13 @@ public class TankWarView extends SurfaceView implements Runnable {
     }
 
     private void update() {
-        player.update();
 
         for (Bullet bullet : player.getBullets()) {
             bullet.update();
         }
-    }
 
+        player.update();
+    }
 
     private void draw() {
 
@@ -119,6 +118,7 @@ public class TankWarView extends SurfaceView implements Runnable {
     }
 
 
+    // TODO: This linting needs addressed
     @SuppressLint("ClickableViewAccessibility")
     private void initFireButton() {
 
@@ -133,7 +133,6 @@ public class TankWarView extends SurfaceView implements Runnable {
             return true;
         });
     }
-
 
     private void debugOverlay() {
         paint.setColor(Color.argb(255, 0, 0, 0));

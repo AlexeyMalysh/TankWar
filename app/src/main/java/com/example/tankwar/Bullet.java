@@ -7,43 +7,40 @@ import static com.example.tankwar.TankWarView.fps;
 public class Bullet extends GameObject {
 
     private static final float MAX_SPEED = 1000f;
-
     private float radianX;
     private float radianY;
 
 
-    public Bullet(Context context, float positionX, float positionY, int playerWidth, int playerHeight, float degrees, Joystick joystick) {
+    public Bullet(Context context, Player player, Joystick joystick) {
 
         // TODO: This may need refactoring to allow for different colour bullets
-        super(context, R.drawable.bullet_blue, positionX, positionY);
+        super(context, R.drawable.bullet_blue, player.getPositionX(), player.getPositionY());
 
         this.radianX = joystick.getPositionX();
         this.radianY = joystick.getPositionY();
 
-        // Calculates center of tank
-        float centerX = getPositionX() + (playerWidth / 2) - (getWidth() / 2);
-        float centerY = getPositionY() + (playerHeight / 2) - (getHeight() / 2);
+        // Centers bullet within tank
+        float centerX = getPositionX() + player.getCenterX() - getCenterX();
+        float centerY = getPositionY() + player.getCenterY() - getCenterY();
 
         // Places bullet in front of tanks gun
-        setPositionX(centerX + (playerWidth * (radianX / 2)));
-        setPositionY(centerY - (playerHeight * (radianY / 2)));
+        setPositionX(centerX + player.getWidth() * (radianX / 2));
+        setPositionY(centerY - player.getHeight() * (radianY / 2));
 
-        // Set initial degrees, this will stay the same through bullets life
-        setDegrees(degrees);
+        // This will stay the same throughout bullets life
+        setDegrees(player.getDegrees());
 
-        updateRotation();
+        // Initial update is required to draw Bullet on canvas
+        updateDegrees();
         updatePosition();
     }
 
     public void update() {
-
-        // Get x and y based on degrees of joystick
         setPositionX(getPositionX() + (radianX * MAX_SPEED / fps));
         setPositionY(getPositionY() - (radianY * MAX_SPEED / fps));
 
-        updateRotation();
+        updateDegrees();
         updatePosition();
     }
-
 
 }

@@ -10,7 +10,7 @@ public class FireButton {
     private final int DELAY_MILLISECONDS = 1000;
     public ImageButton view;
 
-    @SuppressLint("ClickableViewAccessibility")
+
     public FireButton(ImageButton fireButtonView) {
         this.view = fireButtonView;
 
@@ -33,7 +33,6 @@ public class FireButton {
 
     private void updateImage(boolean isActive) {
         int imageId = isActive ? R.drawable.fire_button_active : R.drawable.fire_button_inactive;
-
         view.setImageResource(imageId);
     }
 

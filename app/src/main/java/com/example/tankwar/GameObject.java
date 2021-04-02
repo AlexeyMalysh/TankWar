@@ -68,12 +68,12 @@ public abstract class GameObject {
         return bitmap.getHeight();
     }
 
-    public float getCenterX() {
-        return (float) getWidth() / 2;
+    public int getCenterX() {
+        return getWidth() / 2;
     }
 
-    public float getCenterY() {
-        return (float) getHeight() / 2;
+    public int getCenterY() {
+        return getHeight() / 2;
     }
 
     // Draw updates
@@ -81,7 +81,7 @@ public abstract class GameObject {
         matrix.postTranslate(positionX, positionY);
     }
 
-    public void updateRotation() {
+    public void updateDegrees() {
         matrix.setRotate(-degrees, (float) getWidth() / 2, (float) getHeight() / 2);
     }
 

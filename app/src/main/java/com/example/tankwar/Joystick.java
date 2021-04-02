@@ -10,8 +10,7 @@ public class Joystick {
     private final int LOOP_INTERVAL = 8;
     private final float BACKGROUND_RATIO = 0.5f;
     private final float BUTTON_RATIO = 0.5f;
-
-    private float positionX = 0;
+    private float positionX = 1;
     private float positionY = 0;
     private int degrees = 0;
     private int strength = 0;
@@ -24,7 +23,7 @@ public class Joystick {
 
         joystick.setOnMoveListener(this::update, LOOP_INTERVAL);
 
-        // TODO: It's highly likely there's a more elegant way to deal with this
+        // TODO: It's likely there's a more elegant way to deal with this
         if (joystick.getParent() != null) {
             ((ViewGroup) joystick.getParent()).removeView(joystick);
         }
@@ -52,7 +51,6 @@ public class Joystick {
         // Prevents updates if player is not touching joystick
         if (this.strength <= THRESHOLD) return;
 
-        // Degrees is only updated if player is
         this.degrees = degrees;
 
         // Calculates X and Y based on degrees of joystick
