@@ -2,10 +2,15 @@ package com.example.tankwar;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -24,6 +29,9 @@ public class TankWarView extends SurfaceView implements Runnable {
     private Player player;
     private Joystick joystick;
     private FireButton fireButton;
+    private Bitmap levelBg;
+
+
 
     public TankWarView(Context context, int screenX, int screenY, Joystick joystick, FireButton fireButton) {
         super(context);
@@ -81,6 +89,9 @@ public class TankWarView extends SurfaceView implements Runnable {
 
 
     private void prepareLevel() {
+        levelBg = BitmapFactory.decodeResource(getResources(), R.drawable.level_1);
+        levelBg = Bitmap.createScaledBitmap(levelBg, MainActivity.getScreenWidth(), MainActivity.getScreenHeight(), false);
+
 
     }
 
@@ -99,15 +110,15 @@ public class TankWarView extends SurfaceView implements Runnable {
 
             canvas = ourHolder.lockCanvas();
 
-            canvas.drawColor(Color.argb(255, 26, 255, 128));
-
-            debugOverlay();
+            canvas.drawBitmap(levelBg, 0, 0, paint);
 
             for (Bullet bullet : player.getBullets()) {
                 bullet.draw(canvas);
             }
 
             player.draw(canvas);
+
+            debugOverlay();
 
             ourHolder.unlockCanvasAndPost(canvas);
         }

@@ -11,13 +11,18 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 
+@SuppressWarnings("deprecation")
 public class MainActivity extends AppCompatActivity {
 
     TankWarView tankWarView;
@@ -29,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Set to landscape mode
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        // Hide status bar
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         //Remove top bar
         this.getSupportActionBar().hide();
@@ -44,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         Joystick joystick = new Joystick(joystickView);
 
         // Init fire button
-        ImageButton fireButtonView = findViewById(R.id.imageButton);
+        ImageButton fireButtonView = findViewById(R.id.fireButton);
         FireButton fireButton = new FireButton(fireButtonView);
 
         // Init game

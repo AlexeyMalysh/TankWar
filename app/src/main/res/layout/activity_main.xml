@@ -7,27 +7,8 @@
     android:clipChildren="false"
     tools:context=".MainActivity"
     android:id="@+id/myLayout"
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
     >
-
-
-<!--    <io.github.controlwear.virtual.joystick.android.JoystickView-->
-<!--        android:id="@+id/joystickView_left"-->
-<!--        android:layout_width="109dp"-->
-<!--        android:layout_height="130dp"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_marginStart="32dp"-->
-<!--        android:layout_marginLeft="32dp"-->
-<!--        android:layout_marginBottom="31dp"-->
-<!--        android:background="@drawable/joystick_background"-->
-<!--        app:JV_buttonImage="@drawable/joystick"-->
-<!--        app:JV_buttonSizeRatio="50%"-->
-<!--        app:JV_backgroundSizeRatio="50%"-->
-<!--        app:JV_fixedCenter="false"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
 
     <io.github.controlwear.virtual.joystick.android.JoystickView
         android:id="@+id/joystickView_left"
@@ -43,7 +24,7 @@
         app:JV_buttonImage="@drawable/joystick" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/fireButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
