@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 public abstract class GameObject {
     protected float positionX;
@@ -74,6 +75,19 @@ public abstract class GameObject {
 
     public int getCenterY() {
         return getHeight() / 2;
+    }
+
+    public Rect getRect() {
+        int left = (int) getPositionX();
+        int top = (int) getPositionY();
+        int right = (int) getPositionX() + getWidth();
+        int bottom = (int) getPositionY() + getHeight();
+
+        return new Rect(left, top, right, bottom);
+    }
+
+    public boolean collidesWith(GameObject obj) {
+        return Rect.intersects(getRect(), obj.getRect());
     }
 
     // Draw updates

@@ -32,9 +32,13 @@ public class Joystick {
         joystick.setButtonSizeRatio((float) BUTTON_RATIO);
     }
 
-    public float getPositionX() { return positionX; }
+    public float getPositionX() {
+        return positionX;
+    }
 
-    public float getPositionY() { return positionY; }
+    public float getPositionY() {
+        return positionY;
+    }
 
     public int getDegrees() {
         return degrees;

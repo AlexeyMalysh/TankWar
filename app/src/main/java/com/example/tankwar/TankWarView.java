@@ -5,15 +5,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 
 public class TankWarView extends SurfaceView implements Runnable {
 
@@ -135,6 +131,9 @@ public class TankWarView extends SurfaceView implements Runnable {
     }
 
     private void debugOverlay() {
+
+        paint.setStyle(Paint.Style.FILL);
+
         paint.setColor(Color.argb(255, 0, 0, 0));
         paint.setColor(Color.argb(255, 0, 0, 0));
         paint.setTextSize(40);
@@ -145,6 +144,21 @@ public class TankWarView extends SurfaceView implements Runnable {
         canvas.drawText("Joystick Y: " + joystick.getPositionY(), 1000, 100, paint);
         canvas.drawText("Player X: " + player.getPositionX(), 1500, 50, paint);
         canvas.drawText("Player Y: " + player.getPositionY(), 1500, 100, paint);
+        canvas.drawText("Bullets on screen: " + player.getBullets().size(), 1500, 150, paint);
+
+        drawHitBox(player.getRect());
+
+        for(Bullet bullet : player.getBullets()) {
+            drawHitBox(bullet.getRect());
+        }
+
+    }
+
+    private void drawHitBox(Rect rect) {
+        paint.setColor(Color.argb(255, 255, 0, 0));
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(3f);
+        canvas.drawRect(rect, paint);
     }
 
 }
