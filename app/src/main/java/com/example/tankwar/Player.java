@@ -38,7 +38,7 @@ public class Player extends GameObject {
     }
 
     public void fire() {
-        Bullet bullet = new Bullet(context,this, joystick);
+        Bullet bullet = new Bullet(context,this);
         bullets.add(bullet);
     }
 

@@ -11,13 +11,13 @@ public class Bullet extends GameObject {
     private float radianY;
 
 
-    public Bullet(Context context, Player player, Joystick joystick) {
+    public Bullet(Context context, Player player) {
 
         // TODO: This may need refactoring to allow for different colour bullets
         super(context, R.drawable.bullet_blue, player.getPositionX(), player.getPositionY());
 
-        this.radianX = joystick.getPositionX();
-        this.radianY = joystick.getPositionY();
+        this.radianX = (float) Math.cos(player.getDegrees() * Math.PI / 180);
+        this.radianY = (float) Math.sin(player.getDegrees() * Math.PI / 180);
 
         // Centers bullet within tank
         float centerX = getPositionX() + player.getCenterX() - getCenterX();

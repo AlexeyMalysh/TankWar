@@ -54,7 +54,7 @@ public class Joystick {
         this.degrees = degrees;
 
         // Calculates X and Y based on degrees of joystick
-        positionY = (float) Math.sin(degrees * Math.PI / 180);
         positionX = (float) Math.cos(degrees * Math.PI / 180);
+        positionY = (float) Math.sin(degrees * Math.PI / 180);
     }
 }

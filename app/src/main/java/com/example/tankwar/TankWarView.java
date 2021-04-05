@@ -145,7 +145,6 @@ public class TankWarView extends SurfaceView implements Runnable {
         canvas.drawText("Joystick Y: " + joystick.getPositionY(), 1000, 100, paint);
         canvas.drawText("Player X: " + player.getPositionX(), 1500, 50, paint);
         canvas.drawText("Player Y: " + player.getPositionY(), 1500, 100, paint);
-        canvas.drawText("Bullets On Screen: " + player.getBullets().size(), 700, 150, paint);
     }
 
 }
