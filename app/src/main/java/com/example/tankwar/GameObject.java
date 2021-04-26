@@ -24,7 +24,7 @@ public abstract class GameObject {
 
         this.bitmap = BitmapFactory.decodeResource(context.getResources(), imageId);
 
-        // TODO: Height and width should be scaled to device dimensions
+
         this.bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() / 2), (int) (bitmap.getHeight() / 2), false);
     }
 
@@ -69,12 +69,12 @@ public abstract class GameObject {
         return bitmap.getHeight();
     }
 
-    public int getCenterX() {
-        return getWidth() / 2;
+    public float getCenterX() {
+        return (getPositionX() + (getWidth() / 2));
     }
 
-    public int getCenterY() {
-        return getHeight() / 2;
+    public float getCenterY() {
+        return getPositionY() + (getHeight() / 2);
     }
 
     public Rect getRect() {
@@ -86,8 +86,18 @@ public abstract class GameObject {
         return new Rect(left, top, right, bottom);
     }
 
+    // Calculations between objects
+
     public boolean collidesWith(GameObject obj) {
         return Rect.intersects(getRect(), obj.getRect());
+    }
+
+    public float getDistanceFrom(GameObject obj) {
+        return (float) Math.hypot((getCenterX() - obj.getCenterX()), (getCenterY() - obj.getCenterY()));
+    }
+
+    public float getDegreesFrom(GameObject obj) {
+        return (float) ((float) Math.atan2(getPositionY() - obj.getPositionY(), obj.getPositionX() - getPositionX()) * 180 / Math.PI);
     }
 
     // Draw updates

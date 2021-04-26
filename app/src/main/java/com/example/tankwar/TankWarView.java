@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -31,7 +32,7 @@ public class TankWarView extends SurfaceView implements Runnable {
     private FireButton fireButton;
     private Bitmap levelBg;
 
-
+    private Enemy enemy;
 
     public TankWarView(Context context, int screenX, int screenY, Joystick joystick, FireButton fireButton) {
         super(context);
@@ -51,6 +52,12 @@ public class TankWarView extends SurfaceView implements Runnable {
         initFireButton();
 
         prepareLevel();
+
+
+        // Temporary enemy
+        enemy = new Enemy(context, player, R.drawable.tank_dark, 500, 750);
+
+
     }
 
     @Override
@@ -102,6 +109,7 @@ public class TankWarView extends SurfaceView implements Runnable {
         }
 
         player.update();
+        enemy.update();
     }
 
     private void draw() {
@@ -119,6 +127,10 @@ public class TankWarView extends SurfaceView implements Runnable {
             player.draw(canvas);
 
             debugOverlay();
+
+
+            // Temporary
+            enemy.draw(canvas);
 
             ourHolder.unlockCanvasAndPost(canvas);
         }
@@ -154,12 +166,16 @@ public class TankWarView extends SurfaceView implements Runnable {
         canvas.drawText("Joystick X: " + joystick.getPositionX(), 1000, 50, paint);
         canvas.drawText("Joystick Y: " + joystick.getPositionY(), 1000, 100, paint);
         canvas.drawText("Player X: " + player.getPositionX(), 1500, 50, paint);
-        canvas.drawText("Player Y: " + player.getPositionY(), 1500, 100, paint);
-        canvas.drawText("Bullets on screen: " + player.getBullets().size(), 1500, 150, paint);
+        canvas.drawText("Player Y: " + (player.getPositionY()), 1500, 100, paint);
+        canvas.drawText("Bullets on screen: " + player.getBullets().size(), 1500, 300, paint);
+        canvas.drawText("Enemy X: " + enemy.getPositionX(), 1500, 150, paint);
+        canvas.drawText("Enemy Y: " + (enemy.getPositionY()), 1500, 200, paint);
+
 
         drawHitBox(player.getRect());
+        drawHitBox(enemy.getRect());
 
-        for(Bullet bullet : player.getBullets()) {
+        for (Bullet bullet : player.getBullets()) {
             drawHitBox(bullet.getRect());
         }
 

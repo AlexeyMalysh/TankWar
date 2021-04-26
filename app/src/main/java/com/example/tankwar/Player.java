@@ -7,7 +7,7 @@ import static com.example.tankwar.TankWarView.fps;
 
 public class Player extends GameObject {
 
-    private final float MAX_SPEED = 60f;
+    public final float MAX_SPEED = 200f;
     private Joystick joystick;
     private Context context;
     private CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<>();

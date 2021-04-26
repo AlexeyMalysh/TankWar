@@ -13,7 +13,6 @@ public class Bullet extends GameObject {
 
     public Bullet(Context context, Player player) {
 
-        // TODO: This may need refactoring to allow for different colour bullets
         super(context, R.drawable.bullet_blue, player.getPositionX(), player.getPositionY());
 
         this.radianX = (float) Math.cos(player.getDegrees() * Math.PI / 180);

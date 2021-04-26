@@ -23,13 +23,12 @@ public class Joystick {
 
         joystick.setOnMoveListener(this::update, LOOP_INTERVAL);
 
-        // TODO: It's likely there's a more elegant way to deal with this
         if (joystick.getParent() != null) {
             ((ViewGroup) joystick.getParent()).removeView(joystick);
         }
 
-        joystick.setBackgroundSizeRatio((float) BACKGROUND_RATIO);
-        joystick.setButtonSizeRatio((float) BUTTON_RATIO);
+        joystick.setBackgroundSizeRatio(BACKGROUND_RATIO);
+        joystick.setButtonSizeRatio(BUTTON_RATIO);
     }
 
     public float getPositionX() {
@@ -62,3 +61,4 @@ public class Joystick {
         positionY = (float) Math.sin(degrees * Math.PI / 180);
     }
 }
+
