@@ -1,7 +1,6 @@
 package com.example.tankwar;
 
 import android.content.Context;
-
 import static com.example.tankwar.TankWarView.fps;
 
 public class Bullet extends GameObject {
@@ -11,23 +10,25 @@ public class Bullet extends GameObject {
     private float radianY;
 
 
-    public Bullet(Context context, Player player) {
+    public Bullet(Context context, Tank tank) {
 
-        super(context, R.drawable.bullet_blue, player.getPositionX(), player.getPositionY());
+        super(context, tank.getPositionX(), tank.getPositionY());
 
-        this.radianX = (float) Math.cos(player.getDegrees() * Math.PI / 180);
-        this.radianY = (float) Math.sin(player.getDegrees() * Math.PI / 180);
+        setBitmap(getBulletBitmapId(tank.getType()));
+
+        this.radianX = (float) Math.cos(tank.getDegrees() * Math.PI / 180);
+        this.radianY = (float) Math.sin(tank.getDegrees() * Math.PI / 180);
 
         // Centers bullet within tank
-        float centerX = getPositionX() + player.getCenterX() - getCenterX();
-        float centerY = getPositionY() + player.getCenterY() - getCenterY();
+        float centerX = getPositionX() + tank.getCenterX() - getCenterX();
+        float centerY = getPositionY() + tank.getCenterY() - getCenterY();
 
         // Places bullet in front of tanks gun
-        setPositionX(centerX + player.getWidth() * (radianX / 2));
-        setPositionY(centerY - player.getHeight() * (radianY / 2));
+        setPositionX(centerX + tank.getWidth() * (radianX / 2));
+        setPositionY(centerY - tank.getHeight() * (radianY / 2));
 
         // This will stay the same throughout bullets life
-        setDegrees(player.getDegrees());
+        setDegrees(tank.getDegrees());
 
         // Initial update is required to draw Bullet on canvas
         updateDegrees();
@@ -40,6 +41,16 @@ public class Bullet extends GameObject {
 
         updateDegrees();
         updatePosition();
+    }
+
+    private int getBulletBitmapId(TankType type) {
+        switch (type) {
+            case BLUE:
+                return R.drawable.bullet_blue;
+            case BLACK:
+                return R.drawable.bullet_dark;
+        }
+        return 0;
     }
 
 }

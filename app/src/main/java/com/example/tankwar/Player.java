@@ -5,18 +5,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.example.tankwar.TankWarView.fps;
 
-public class Player extends GameObject {
+public class Player extends Tank {
 
-    public final float MAX_SPEED = 200f;
+    public final float MAX_SPEED = 300f;
     private Joystick joystick;
-    private Context context;
-    private CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<>();
 
-    public Player(Context context, Joystick joystick, int imageId, float positionX, float positionY) {
-        super(context, imageId, positionX, positionY);
+    public Player(Context context, Joystick joystick, float positionX, float positionY) {
+        super(context, TankType.BLUE, positionX, positionY);
 
         this.joystick = joystick;
-        this.context = context;
 
         // Initial update is required to draw player on canvas
         updateDegrees();
@@ -37,11 +34,6 @@ public class Player extends GameObject {
         updatePosition();
     }
 
-    public void fire() {
-        Bullet bullet = new Bullet(context,this);
-        bullets.add(bullet);
-    }
 
-    public CopyOnWriteArrayList<Bullet> getBullets() { return bullets; }
 
 }

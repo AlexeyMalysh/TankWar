@@ -1,23 +1,27 @@
 package com.example.tankwar;
 
 import android.content.Context;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.example.tankwar.TankWarView.fps;
 
-public class Enemy extends GameObject {
+public class Enemy extends Tank {
 
     private Player player;
+    private final float SPEED = 50f;
 
-    public Enemy(Context context, Player player, int imageId, float positionX, float positionY) {
-        super(context, imageId, positionX, positionY);
+    public Enemy(Context context, Player player, float positionX, float positionY) {
+        super(context, TankType.BLACK, positionX, positionY);
+
         this.player = player;
 
         updateDegrees();
         updatePosition();
+        initFiring();
     }
 
     public void update() {
-
         turnTowardsPlayer();
 
         if (!collidesWith(player)) {
@@ -25,10 +29,7 @@ public class Enemy extends GameObject {
         } else {
             stop();
         }
-
     }
-
-    // TODO: Fire method, refactor player and enemy into abstract Tank class
 
     private void turnTowardsPlayer() {
         setDegrees(getDegreesFrom(player));
@@ -41,8 +42,8 @@ public class Enemy extends GameObject {
         float radianX = (float) Math.cos(degrees * Math.PI / 180);
         float radianY = (float) Math.sin(degrees * Math.PI / 180);
 
-        setPositionX(getPositionX() + (radianX * 60f / fps));
-        setPositionY(getPositionY() - (radianY * 60f / fps));
+        setPositionX(getPositionX() + (radianX * SPEED / fps));
+        setPositionY(getPositionY() - (radianY * SPEED / fps));
 
         updatePosition();
     }
@@ -51,6 +52,15 @@ public class Enemy extends GameObject {
         setPositionX(getPositionX());
         setPositionY(getPositionY());
         updatePosition();
+    }
+
+    private void initFiring() {
+        new Timer().scheduleAtFixedRate(new TimerTask(){
+            @Override
+            public void run(){
+                fire();
+            }
+        },0,5000);
     }
 
 }

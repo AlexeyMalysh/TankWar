@@ -6,16 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PointF;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import java.util.ArrayList;
 
 public class TankWarView extends SurfaceView implements Runnable {
 
@@ -32,7 +29,7 @@ public class TankWarView extends SurfaceView implements Runnable {
     private FireButton fireButton;
     private Bitmap levelBg;
 
-    private Enemy enemy;
+    private ArrayList<Enemy> enemyList;
 
     public TankWarView(Context context, int screenX, int screenY, Joystick joystick, FireButton fireButton) {
         super(context);
@@ -46,18 +43,12 @@ public class TankWarView extends SurfaceView implements Runnable {
         float centerX = (float) screenX / 2;
         float centerY = (float) screenY / 2;
 
-        player = new Player(context, joystick, R.drawable.tank_blue, centerX, centerY);
+        player = new Player(context, joystick, centerX, centerY);
 
         this.fireButton = fireButton;
         initFireButton();
 
         prepareLevel();
-
-
-        // Temporary enemy
-        enemy = new Enemy(context, player, R.drawable.tank_dark, 500, 750);
-
-
     }
 
     @Override
@@ -99,7 +90,9 @@ public class TankWarView extends SurfaceView implements Runnable {
         levelBg = BitmapFactory.decodeResource(getResources(), R.drawable.level_1);
         levelBg = Bitmap.createScaledBitmap(levelBg, MainActivity.getScreenWidth(), MainActivity.getScreenHeight(), false);
 
+        enemyList = new ArrayList<>();
 
+        enemyList.add(new Enemy(getContext(), player,  500, 500));
     }
 
     private void update() {
@@ -109,7 +102,13 @@ public class TankWarView extends SurfaceView implements Runnable {
         }
 
         player.update();
-        enemy.update();
+
+        for(Enemy enemy : enemyList) {
+            enemy.update();
+            for (Bullet bullet : enemy.getBullets()) {
+                bullet.update();
+            }
+        }
     }
 
     private void draw() {
@@ -126,11 +125,14 @@ public class TankWarView extends SurfaceView implements Runnable {
 
             player.draw(canvas);
 
+            for(Enemy enemy : enemyList) {
+                enemy.draw(canvas);
+                for (Bullet bullet : enemy.getBullets()) {
+                    bullet.draw(canvas);
+                }
+            }
+
             debugOverlay();
-
-
-            // Temporary
-            enemy.draw(canvas);
 
             ourHolder.unlockCanvasAndPost(canvas);
         }
@@ -168,17 +170,19 @@ public class TankWarView extends SurfaceView implements Runnable {
         canvas.drawText("Player X: " + player.getPositionX(), 1500, 50, paint);
         canvas.drawText("Player Y: " + (player.getPositionY()), 1500, 100, paint);
         canvas.drawText("Bullets on screen: " + player.getBullets().size(), 1500, 300, paint);
-        canvas.drawText("Enemy X: " + enemy.getPositionX(), 1500, 150, paint);
-        canvas.drawText("Enemy Y: " + (enemy.getPositionY()), 1500, 200, paint);
-
 
         drawHitBox(player.getRect());
-        drawHitBox(enemy.getRect());
 
         for (Bullet bullet : player.getBullets()) {
             drawHitBox(bullet.getRect());
         }
 
+        for(Enemy enemy : enemyList) {
+            drawHitBox(enemy.getRect());
+            for (Bullet bullet : enemy.getBullets()) {
+                drawHitBox(bullet.getRect());
+            }
+        }
     }
 
     private void drawHitBox(Rect rect) {

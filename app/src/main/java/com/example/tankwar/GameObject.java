@@ -7,8 +7,10 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 public abstract class GameObject {
+    protected Context context;
     protected float positionX;
     protected float positionY;
     protected float degrees;
@@ -17,15 +19,11 @@ public abstract class GameObject {
     private Paint paint;
 
 
-    public GameObject(Context context, int imageId, float positionX, float positionY) {
+    public GameObject(Context context, float positionX, float positionY) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.matrix = new Matrix();
-
-        this.bitmap = BitmapFactory.decodeResource(context.getResources(), imageId);
-
-
-        this.bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() / 2), (int) (bitmap.getHeight() / 2), false);
+        this.context = context;
     }
 
     // Update logic must be implemented for each GameObject
@@ -34,6 +32,12 @@ public abstract class GameObject {
     //    Every GameObject must be drawn in TankWarView
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, matrix, paint);
+    }
+
+    // This is required
+    public void setBitmap(int id) {
+        this.bitmap = BitmapFactory.decodeResource(context.getResources(), id);
+        this.bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() / 2), (int) (bitmap.getHeight() / 2), false);
     }
 
     //    Helper methods
