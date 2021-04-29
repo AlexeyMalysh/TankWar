@@ -3,6 +3,7 @@ package com.example.tankwar;
 import android.content.Context;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.example.tankwar.TankWarView.fps;
 
@@ -30,6 +31,8 @@ public class Enemy extends Tank {
             stop();
         }
     }
+
+
 
     private void turnTowardsPlayer() {
         setDegrees(getDegreesFrom(player));

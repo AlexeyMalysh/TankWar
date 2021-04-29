@@ -8,11 +8,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TankWarView extends SurfaceView implements Runnable {
 
@@ -92,23 +97,73 @@ public class TankWarView extends SurfaceView implements Runnable {
 
         enemyList = new ArrayList<>();
 
-        enemyList.add(new Enemy(getContext(), player,  500, 500));
+        if (enemyList.size() <= 1) {
+            new Timer().scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    enemyList.add(new Enemy(getContext(), player, 500, 500));
+                }
+            }, 0, 10000);
+        }
+
+
     }
 
     private void update() {
 
-        for (Bullet bullet : player.getBullets()) {
-            bullet.update();
-        }
 
+        // Player update logic
         player.update();
 
-        for(Enemy enemy : enemyList) {
-            enemy.update();
-            for (Bullet bullet : enemy.getBullets()) {
-                bullet.update();
+        CopyOnWriteArrayList<Bullet> activeBullets = new CopyOnWriteArrayList<>();
+
+
+        for (Bullet bullet : player.getBullets()) {
+            bullet.update();
+
+
+            // Detect if bullet collides with any enemies
+            for (Enemy enemy : enemyList) {
+                // If bullet collides with player it will explode and be set false
+                if (bullet.collidesWith(enemy) && bullet.isActive()) {
+                    bullet.explode();
+                }
+            }
+
+            // Any bullet that has not exploded or gone out of bounds with be looped through again
+            if (!bullet.isDisposed()) {
+                activeBullets.add(bullet);
             }
         }
+
+        player.setBullets(activeBullets);
+
+
+        // Enemies update logic
+        for (Enemy enemy : enemyList) {
+            enemy.update();
+
+            // Create list that stores active bullets
+            CopyOnWriteArrayList<Bullet> enemyActiveBullets = new CopyOnWriteArrayList<>();
+
+            for (Bullet bullet : enemy.getBullets()) {
+                bullet.update();
+
+                // If bullet collides with player it will explode and be set false
+                if (bullet.collidesWith(player) && bullet.isActive()) {
+                    bullet.explode();
+                }
+
+                // Any bullet that has not exploded or gone out of bounds with be looped through again
+                if (!bullet.isDisposed()) {
+                    enemyActiveBullets.add(bullet);
+                }
+            }
+
+            enemy.setBullets(enemyActiveBullets);
+        }
+
+
     }
 
     private void draw() {
@@ -116,30 +171,30 @@ public class TankWarView extends SurfaceView implements Runnable {
         if (ourHolder.getSurface().isValid()) {
 
             canvas = ourHolder.lockCanvas();
-
             canvas.drawBitmap(levelBg, 0, 0, paint);
 
-            for (Bullet bullet : player.getBullets()) {
-                bullet.draw(canvas);
-            }
 
             player.draw(canvas);
 
-            for(Enemy enemy : enemyList) {
+
+            for (Enemy enemy : enemyList) {
                 enemy.draw(canvas);
                 for (Bullet bullet : enemy.getBullets()) {
                     bullet.draw(canvas);
                 }
             }
 
+            for (Bullet bullet : player.getBullets()) {
+                bullet.draw(canvas);
+            }
+
             debugOverlay();
+
 
             ourHolder.unlockCanvasAndPost(canvas);
         }
     }
 
-
-    // TODO: This linting needs addressed
     @SuppressLint("ClickableViewAccessibility")
     private void initFireButton() {
 
@@ -169,20 +224,26 @@ public class TankWarView extends SurfaceView implements Runnable {
         canvas.drawText("Joystick Y: " + joystick.getPositionY(), 1000, 100, paint);
         canvas.drawText("Player X: " + player.getPositionX(), 1500, 50, paint);
         canvas.drawText("Player Y: " + (player.getPositionY()), 1500, 100, paint);
-        canvas.drawText("Bullets on screen: " + player.getBullets().size(), 1500, 300, paint);
+        canvas.drawText("Active player bullets: " + player.getBullets().size(), 1500, 300, paint);
 
-        drawHitBox(player.getRect());
-
-        for (Bullet bullet : player.getBullets()) {
-            drawHitBox(bullet.getRect());
+        if (player.isOutOfBounds()) {
+            canvas.drawText("Player is out of bounds ", 1500, 350, paint);
+        } else {
+            canvas.drawText("Player is in bounds ", 1500, 350, paint);
         }
 
-        for(Enemy enemy : enemyList) {
-            drawHitBox(enemy.getRect());
-            for (Bullet bullet : enemy.getBullets()) {
-                drawHitBox(bullet.getRect());
-            }
-        }
+//        drawHitBox(player.getRect());
+
+//        for (Bullet bullet : player.getBullets()) {
+//            drawHitBox(bullet.getRect());
+//        }
+////
+//        for (Enemy enemy : enemyList) {
+//            drawHitBox(enemy.getRect());
+//            for (Bullet bullet : enemy.getBullets()) {
+//                drawHitBox(bullet.getRect());
+//            }
+//        }
     }
 
     private void drawHitBox(Rect rect) {

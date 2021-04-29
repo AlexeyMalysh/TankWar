@@ -23,6 +23,10 @@ public abstract class Tank extends GameObject {
         bullets.add(bullet);
     }
 
+    public void setBullets(CopyOnWriteArrayList<Bullet> bullets) {
+        this.bullets = bullets;
+    }
+
     public CopyOnWriteArrayList<Bullet> getBullets() {
         return bullets;
     }

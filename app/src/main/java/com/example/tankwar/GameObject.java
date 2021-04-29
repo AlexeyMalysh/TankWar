@@ -92,6 +92,18 @@ public abstract class GameObject {
 
     // Calculations between objects
 
+    public boolean isOutOfBoundsX() {
+        return (getPositionX() + getWidth() < 0) || getPositionX() > MainActivity.getScreenWidth();
+    }
+
+    public boolean isOutOfBoundsY() {
+        return (getPositionY() + getHeight() < 0 ) || getPositionY() > MainActivity.getScreenHeight();
+    }
+
+    public boolean isOutOfBounds() {
+        return isOutOfBoundsX() || isOutOfBoundsY();
+    }
+
     public boolean collidesWith(GameObject obj) {
         return Rect.intersects(getRect(), obj.getRect());
     }
