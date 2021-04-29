@@ -1,6 +1,7 @@
 package com.example.tankwar;
 
 import android.content.Context;
+
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.example.tankwar.TankWarView.fps;
@@ -23,7 +24,9 @@ public class Player extends Tank {
     public void update() {
 
         // Only update player if user is touching joystick
-        if(joystick.getStrength() == 0) return;
+        if (joystick.getStrength() == 0) return;
+
+        checkBounds();
 
         setDegrees(joystick.getDegrees());
 
@@ -35,5 +38,23 @@ public class Player extends Tank {
     }
 
 
+    public void checkBounds() {
+
+        if (isOutOfBoundsX()) {
+            if (getPositionX() > 1) {
+                setPositionX(0);
+            } else {
+                setPositionX(MainActivity.getScreenWidth() - getWidth());
+            }
+        }
+
+        if (isOutOfBoundsY()) {
+            if (getPositionY() > 1) {
+                setPositionY(0);
+            } else {
+                setPositionY(MainActivity.getScreenHeight() - getHeight());
+            }
+        }
+    }
 
 }
