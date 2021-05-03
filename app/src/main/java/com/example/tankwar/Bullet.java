@@ -10,7 +10,6 @@ import static com.example.tankwar.TankWarView.fps;
 public class Bullet extends GameObject {
 
     private static final float MAX_SPEED = 1000f;
-    private static final int EXPLOSION_DELAY_MILLISECONDS = 100;
     private float radianX;
     private float radianY;
     private boolean active = true;
@@ -44,13 +43,10 @@ public class Bullet extends GameObject {
 
     public void update() {
 
+        if (!active) return;
+
         if (isOutOfBounds()) {
             dispose();
-            return;
-        }
-
-        if (!active) {
-            stop();
             return;
         }
 
@@ -76,17 +72,39 @@ public class Bullet extends GameObject {
         return disposed;
     }
 
-    public void explode() {
+    public void explode(GameObject objHit) {
         // Set active to false preventing updates to bullet
         active = false;
 
-        // Change bullet sprite to explosion sprite
+        // Initially set to final explosion to get initial width
+        setBitmap(R.drawable.explosion2);
+
+        // Place explosion in center of target that was hit
+        float centerX = objHit.getCenterX() - (float) getWidth() / 2;
+        float centerY = objHit.getCenterY() - (float) getHeight() / 2;
+
+        setPositionX(centerX);
+        setPositionY(centerY);
+        setDegrees(0);
+
+        // Final update
+        updateDegrees();
+        updatePosition();
+
+        // Bullet explosion animation
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                setBitmap(R.drawable.explosion1);
+            }
+        }, 0);
+
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 setBitmap(R.drawable.explosion2);
             }
-        }, 0);
+        }, 100);
 
         // Delay the removing of an active bullet so the explosion takes place first
         new Timer().schedule(new TimerTask() {
@@ -94,7 +112,7 @@ public class Bullet extends GameObject {
             public void run() {
                 disposed = true;
             }
-        }, EXPLOSION_DELAY_MILLISECONDS);
+        }, 150);
 
     }
 
@@ -106,14 +124,6 @@ public class Bullet extends GameObject {
                 return R.drawable.bullet_dark;
         }
         return 0;
-    }
-
-    private void stop() {
-        setPositionX(getPositionX());
-        setPositionY(getPositionY());
-        setDegrees(getDegrees());
-        updateDegrees();
-        updatePosition();
     }
 
 }

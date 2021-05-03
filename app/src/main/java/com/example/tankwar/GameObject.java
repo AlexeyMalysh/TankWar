@@ -38,6 +38,8 @@ public abstract class GameObject {
     public void setBitmap(int id) {
         this.bitmap = BitmapFactory.decodeResource(context.getResources(), id);
         this.bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() / 2), (int) (bitmap.getHeight() / 2), false);
+
+
     }
 
     //    Helper methods
@@ -97,7 +99,7 @@ public abstract class GameObject {
     }
 
     public boolean isOutOfBoundsY() {
-        return (getPositionY() + getHeight() < 0 ) || getPositionY() > MainActivity.getScreenHeight();
+        return (getPositionY() + getHeight() < 0) || getPositionY() > MainActivity.getScreenHeight();
     }
 
     public boolean isOutOfBounds() {

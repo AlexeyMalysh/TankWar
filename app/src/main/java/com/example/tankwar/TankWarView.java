@@ -101,7 +101,9 @@ public class TankWarView extends SurfaceView implements Runnable {
             new Timer().scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    enemyList.add(new Enemy(getContext(), player, 500, 500));
+                    if (enemyList.size() <= 1) {
+                        enemyList.add(new Enemy(getContext(), player, 500, 500));
+                    }
                 }
             }, 0, 10000);
         }
@@ -111,22 +113,19 @@ public class TankWarView extends SurfaceView implements Runnable {
 
     private void update() {
 
-
         // Player update logic
         player.update();
 
         CopyOnWriteArrayList<Bullet> activeBullets = new CopyOnWriteArrayList<>();
 
-
         for (Bullet bullet : player.getBullets()) {
             bullet.update();
-
 
             // Detect if bullet collides with any enemies
             for (Enemy enemy : enemyList) {
                 // If bullet collides with player it will explode and be set false
                 if (bullet.collidesWith(enemy) && bullet.isActive()) {
-                    bullet.explode();
+                    bullet.explode(enemy);
                 }
             }
 
@@ -151,7 +150,7 @@ public class TankWarView extends SurfaceView implements Runnable {
 
                 // If bullet collides with player it will explode and be set false
                 if (bullet.collidesWith(player) && bullet.isActive()) {
-                    bullet.explode();
+                    bullet.explode(player);
                 }
 
                 // Any bullet that has not exploded or gone out of bounds with be looped through again
@@ -173,9 +172,7 @@ public class TankWarView extends SurfaceView implements Runnable {
             canvas = ourHolder.lockCanvas();
             canvas.drawBitmap(levelBg, 0, 0, paint);
 
-
             player.draw(canvas);
-
 
             for (Enemy enemy : enemyList) {
                 enemy.draw(canvas);
