@@ -34,7 +34,7 @@ public class TankWarView extends SurfaceView implements Runnable {
     private FireButton fireButton;
     private Bitmap levelBg;
 
-    private ArrayList<Enemy> enemyList;
+    private CopyOnWriteArrayList<Enemy> enemyList;
 
     public TankWarView(Context context, int screenX, int screenY, Joystick joystick, FireButton fireButton) {
         super(context);
@@ -95,7 +95,7 @@ public class TankWarView extends SurfaceView implements Runnable {
         levelBg = BitmapFactory.decodeResource(getResources(), R.drawable.level_1);
         levelBg = Bitmap.createScaledBitmap(levelBg, MainActivity.getScreenWidth(), MainActivity.getScreenHeight(), false);
 
-        enemyList = new ArrayList<>();
+        enemyList = new CopyOnWriteArrayList<>();
 
         if (enemyList.size() <= 1) {
             new Timer().scheduleAtFixedRate(new TimerTask() {
@@ -112,8 +112,11 @@ public class TankWarView extends SurfaceView implements Runnable {
     }
 
     private void update() {
+        updatePlayer();
+        updateEnemies();
+    }
 
-        // Player update logic
+    private void updatePlayer() {
         player.update();
 
         CopyOnWriteArrayList<Bullet> activeBullets = new CopyOnWriteArrayList<>();
@@ -126,6 +129,8 @@ public class TankWarView extends SurfaceView implements Runnable {
                 // If bullet collides with player it will explode and be set false
                 if (bullet.collidesWith(enemy) && bullet.isActive()) {
                     bullet.explode(enemy);
+                    enemy.destroy();
+                    player.incrementScore(10);
                 }
             }
 
@@ -136,9 +141,11 @@ public class TankWarView extends SurfaceView implements Runnable {
         }
 
         player.setBullets(activeBullets);
+    }
 
+    private void updateEnemies() {
+        CopyOnWriteArrayList<Enemy> activeEnemies = new CopyOnWriteArrayList<>();
 
-        // Enemies update logic
         for (Enemy enemy : enemyList) {
             enemy.update();
 
@@ -159,10 +166,16 @@ public class TankWarView extends SurfaceView implements Runnable {
                 }
             }
 
+            // Update enemy bullets to bullets that are still active
             enemy.setBullets(enemyActiveBullets);
+
+            // Any enemy that has not been destroyed will be looped through again
+            if (!enemy.isDisposed()) {
+                activeEnemies.add(enemy);
+            }
         }
 
-
+        enemyList = activeEnemies;
     }
 
     private void draw() {
@@ -222,6 +235,9 @@ public class TankWarView extends SurfaceView implements Runnable {
         canvas.drawText("Player X: " + player.getPositionX(), 1500, 50, paint);
         canvas.drawText("Player Y: " + (player.getPositionY()), 1500, 100, paint);
         canvas.drawText("Active player bullets: " + player.getBullets().size(), 1500, 300, paint);
+        canvas.drawText("Enemies on screen: " + enemyList.size(), 1500, 400, paint);
+        canvas.drawText("Player score: " + player.getScore(), 1500, 500, paint);
+
 
         if (player.isOutOfBounds()) {
             canvas.drawText("Player is out of bounds ", 1500, 350, paint);
@@ -229,18 +245,18 @@ public class TankWarView extends SurfaceView implements Runnable {
             canvas.drawText("Player is in bounds ", 1500, 350, paint);
         }
 
-//        drawHitBox(player.getRect());
+        drawHitBox(player.getRect());
 
-//        for (Bullet bullet : player.getBullets()) {
-//            drawHitBox(bullet.getRect());
-//        }
-////
-//        for (Enemy enemy : enemyList) {
-//            drawHitBox(enemy.getRect());
-//            for (Bullet bullet : enemy.getBullets()) {
-//                drawHitBox(bullet.getRect());
-//            }
-//        }
+        for (Bullet bullet : player.getBullets()) {
+            drawHitBox(bullet.getRect());
+        }
+//
+        for (Enemy enemy : enemyList) {
+            drawHitBox(enemy.getRect());
+            for (Bullet bullet : enemy.getBullets()) {
+                drawHitBox(bullet.getRect());
+            }
+        }
     }
 
     private void drawHitBox(Rect rect) {

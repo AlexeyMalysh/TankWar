@@ -10,6 +10,7 @@ public class Player extends Tank {
 
     public final float MAX_SPEED = 200f;
     private Joystick joystick;
+    private int score = 0;
 
     public Player(Context context, Joystick joystick, float positionX, float positionY) {
         super(context, TankType.BLUE, positionX, positionY);
@@ -55,6 +56,14 @@ public class Player extends Tank {
                 setPositionY(MainActivity.getScreenHeight() - getHeight());
             }
         }
+    }
+
+    public void incrementScore(int amount) {
+        score += amount;
+    }
+
+    public int getScore() {
+        return score;
     }
 
 }
