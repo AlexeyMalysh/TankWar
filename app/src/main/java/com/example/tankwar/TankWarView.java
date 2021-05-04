@@ -15,6 +15,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -97,18 +98,23 @@ public class TankWarView extends SurfaceView implements Runnable {
 
         enemyList = new CopyOnWriteArrayList<>();
 
-        if (enemyList.size() <= 1) {
-            new Timer().scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    if (enemyList.size() <= 1) {
-                        enemyList.add(new Enemy(getContext(), player, 500, 500));
-                    }
+        spawnEnemies();
+
+    }
+
+    private void spawnEnemies() {
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (enemyList.size() <= 10) {
+                    spawnEnemy();
                 }
-            }, 0, 10000);
-        }
+            }
+        }, 0, 5000);
+    }
 
-
+    private void spawnEnemy() {
+        enemyList.add(new Enemy(getContext(), player));
     }
 
     private void update() {

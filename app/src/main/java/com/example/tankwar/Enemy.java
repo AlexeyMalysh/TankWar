@@ -1,6 +1,8 @@
 package com.example.tankwar;
 
 import android.content.Context;
+
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -9,29 +11,43 @@ import static com.example.tankwar.TankWarView.fps;
 
 public class Enemy extends Tank {
 
+    private final int MAX_STOPPING_DISTANCE = 1000;
+    private final int MAX_FIRE_RATE = 5000;
+    private final int MIN_FIRE_RATE = 2500;
+    private final float SPEED = 100f;
     private Player player;
-    private final float SPEED = 50f;
+    private float stoppingDistance;
 
-    public Enemy(Context context, Player player, float positionX, float positionY) {
-        super(context, TankType.BLACK, positionX, positionY);
-
+    public Enemy(Context context, Player player ) {
+        super(context, TankType.BLACK, 0, 0);
         this.player = player;
 
+        setSpawnPoint();
         updateDegrees();
         updatePosition();
         initFiring();
+
+        // Random distance enemy stopping distance for variation
+        Random rand = new Random();
+        stoppingDistance = rand.nextInt(MAX_STOPPING_DISTANCE);
     }
 
     public void update() {
         turnTowardsPlayer();
 
-        if (!collidesWith(player)) {
+        // Regardless of collisions and distance move towards player if out of bounds
+        if (isOutOfBounds()) {
+            moveTowardsPlayer();
+            return;
+        }
+
+        // stop movement if colliding or within stopped distance of player
+        if (!collidesWith(player) && getDistanceFrom(player) > stoppingDistance) {
             moveTowardsPlayer();
         } else {
             stop();
         }
     }
-
 
 
     private void turnTowardsPlayer() {
@@ -58,13 +74,55 @@ public class Enemy extends Tank {
     }
 
     private void initFiring() {
-        new Timer().scheduleAtFixedRate(new TimerTask(){
+
+        Random rand = new Random();
+
+        int fireRate = rand.nextInt(MAX_FIRE_RATE - MIN_FIRE_RATE + 1) + MIN_FIRE_RATE;
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void run(){
-                fire();
+            public void run() {
+                if (!isOutOfBounds() || getDistanceFrom(player) > 500) {
+                    fire();
+                }
             }
-        },0,5000);
+        }, MIN_FIRE_RATE, fireRate);
     }
+
+    private void setSpawnPoint() {
+        Random rand = new Random();
+
+        // Obtain a number between 0 - 3;
+        int n = rand.nextInt(4);
+
+        // Determine if any should spawn on top, bottom, left or right of screen
+        switch (n) {
+            case 0:
+                //Enemy will spawn at top
+                setPositionX(rand.nextInt(MainActivity.getScreenWidth()));
+                setPositionY(MainActivity.getScreenHeight() + 100);
+                break;
+            case 1:
+                // Enemy will spawn at bottom
+                setPositionX(rand.nextInt(MainActivity.getScreenWidth()));
+                setPositionY(-100);
+                break;
+            case 2:
+                // Enemy will spawn at left
+                setPositionX(-100);
+                setPositionY(rand.nextInt(MainActivity.getScreenHeight()));
+                break;
+            case 3:
+                // Enemy will spawn at right
+                setPositionX(MainActivity.getScreenWidth() + 100);
+                setPositionY(rand.nextInt(MainActivity.getScreenHeight()));
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + n);
+        }
+
+    }
+
 
 }
 
