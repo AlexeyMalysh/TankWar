@@ -1,4 +1,4 @@
-package com.example.tankwar;
+package com.example.tankwar.GameObjects;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,7 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
+
+import com.example.tankwar.MainActivity;
 
 public abstract class GameObject {
     protected Context context;

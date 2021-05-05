@@ -1,11 +1,12 @@
-package com.example.tankwar;
+package com.example.tankwar.GameObjects;
 
 import android.content.Context;
+
+import com.example.tankwar.MainActivity;
 
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.example.tankwar.TankWarView.fps;
 

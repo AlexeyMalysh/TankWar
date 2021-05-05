@@ -1,6 +1,8 @@
-package com.example.tankwar;
+package com.example.tankwar.GameObjects;
 
 import android.content.Context;
+
+import com.example.tankwar.R;
 
 import java.util.Timer;
 import java.util.TimerTask;
