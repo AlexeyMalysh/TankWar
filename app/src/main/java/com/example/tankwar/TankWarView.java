@@ -34,8 +34,8 @@ public class TankWarView extends SurfaceView implements Runnable {
     private Joystick joystick;
     private FireButton fireButton;
     private Bitmap levelBg;
-
     private CopyOnWriteArrayList<Enemy> enemyList;
+    private int enemiesToSpawnPerWave = 1;
 
     public TankWarView(Context context, int screenX, int screenY, Joystick joystick, FireButton fireButton) {
         super(context);
@@ -103,14 +103,19 @@ public class TankWarView extends SurfaceView implements Runnable {
     }
 
     private void spawnEnemies() {
+
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (enemyList.size() <= 10) {
-                    spawnEnemy();
+                for(int i = 0; i < enemiesToSpawnPerWave; i++) {
+                    if(enemyList.size() < 10) {
+                        spawnEnemy();
+                    }
                 }
             }
         }, 0, 5000);
+
+
     }
 
     private void spawnEnemy() {
@@ -137,6 +142,16 @@ public class TankWarView extends SurfaceView implements Runnable {
                     bullet.explode(enemy);
                     enemy.destroy();
                     player.incrementScore(10);
+
+                    // If player has killed 10 enemies, increase enemy spawn per wave
+                    if(player.getScore() != 0 && player.getScore() % 100 == 0) {
+                        enemiesToSpawnPerWave += 1;
+                    }
+
+                    // Add an enemy so there is always at least one on screen at all times
+                    if (enemyList.size() <= 1) {
+                        spawnEnemy();
+                    }
                 }
             }
 
@@ -243,6 +258,7 @@ public class TankWarView extends SurfaceView implements Runnable {
         canvas.drawText("Active player bullets: " + player.getBullets().size(), 1500, 300, paint);
         canvas.drawText("Enemies on screen: " + enemyList.size(), 1500, 400, paint);
         canvas.drawText("Player score: " + player.getScore(), 1500, 500, paint);
+        canvas.drawText("Enemies to be spawn per wave: " + enemiesToSpawnPerWave, 1500, 550, paint);
 
 
         if (player.isOutOfBounds()) {

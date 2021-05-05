@@ -11,9 +11,10 @@ import static com.example.tankwar.TankWarView.fps;
 
 public class Enemy extends Tank {
 
-    private final int MAX_STOPPING_DISTANCE = 1000;
+    private final int MAX_STOPPING_DISTANCE = MainActivity.getScreenWidth() / 2;
     private final int MAX_FIRE_RATE = 5000;
     private final int MIN_FIRE_RATE = 2500;
+    private final int MIN_STOPPING_DISTANCE = 200;
     private final float SPEED = 100f;
     private Player player;
     private float stoppingDistance;
@@ -29,7 +30,7 @@ public class Enemy extends Tank {
 
         // Random distance enemy stopping distance for variation
         Random rand = new Random();
-        stoppingDistance = rand.nextInt(MAX_STOPPING_DISTANCE);
+        stoppingDistance = rand.nextInt(MAX_STOPPING_DISTANCE - MIN_STOPPING_DISTANCE + 1) + MIN_STOPPING_DISTANCE;
     }
 
     public void update() {
@@ -82,7 +83,7 @@ public class Enemy extends Tank {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (!isOutOfBounds() || getDistanceFrom(player) > 500) {
+                if (!isOutOfBounds() && getDistanceFrom(player) <= stoppingDistance) {
                     fire();
                 }
             }

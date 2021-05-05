@@ -9,7 +9,7 @@ import static com.example.tankwar.TankWarView.fps;
 
 public class Bullet extends GameObject {
 
-    private float MAX_SPEED = 750f;
+    private float MAX_SPEED = 600f;
     private float radianX;
     private float radianY;
     private boolean active = true;
