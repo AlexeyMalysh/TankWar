@@ -4,20 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Debug;
-import android.util.Log;
-import android.view.Display;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import com.example.tankwar.UI.FireButton;
+import com.example.tankwar.UI.Joystick;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 

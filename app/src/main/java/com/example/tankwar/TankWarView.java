@@ -14,6 +14,9 @@ import android.view.SurfaceView;
 import com.example.tankwar.GameObjects.Bullet;
 import com.example.tankwar.GameObjects.Enemy;
 import com.example.tankwar.GameObjects.Player;
+import com.example.tankwar.UI.DebugOverlay;
+import com.example.tankwar.UI.FireButton;
+import com.example.tankwar.UI.Joystick;
 
 import java.util.Timer;
 import java.util.TimerTask;

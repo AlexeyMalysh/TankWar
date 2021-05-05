@@ -2,7 +2,7 @@ package com.example.tankwar.GameObjects;
 
 import android.content.Context;
 
-import com.example.tankwar.Joystick;
+import com.example.tankwar.UI.Joystick;
 import com.example.tankwar.MainActivity;
 
 import static com.example.tankwar.TankWarView.fps;

@@ -1,4 +1,4 @@
-package com.example.tankwar;
+package com.example.tankwar.UI;
 
 import android.view.ViewGroup;
 

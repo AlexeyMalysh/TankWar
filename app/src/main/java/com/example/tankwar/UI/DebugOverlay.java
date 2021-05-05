@@ -1,4 +1,4 @@
-package com.example.tankwar;
+package com.example.tankwar.UI;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,16 +10,15 @@ import com.example.tankwar.GameObjects.Enemy;
 import com.example.tankwar.GameObjects.Player;
 
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import static com.example.tankwar.TankWarView.enemiesToSpawnPerWave;
 import static com.example.tankwar.TankWarView.fps;
 
 public class DebugOverlay {
 
-    private final int PADDING_X = 170;
-    private final int PADDING_Y = 60;
-    private Paint paint;
-    private Joystick joystick;
-    private Player player;
+    private final Paint paint;
+    private final Joystick joystick;
+    private final Player player;
     private CopyOnWriteArrayList<Enemy> enemies;
 
     DebugOverlay(Joystick joystick, Player player, CopyOnWriteArrayList<Enemy> enemies) {
@@ -27,13 +26,15 @@ public class DebugOverlay {
         this.player = player;
         this.enemies = enemies;
         paint = new Paint();
-
     }
 
     public void draw(Canvas canvas) {
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.argb(255, 0, 0, 0));
         paint.setTextSize(40);
+
+        final int PADDING_Y = 60;
+        final int PADDING_X = 170;
 
         gameStateOverlay(canvas, 100, PADDING_Y);
 
@@ -46,7 +47,7 @@ public class DebugOverlay {
         drawHitBoxes(canvas);
     }
 
-    public void setEnemies(CopyOnWriteArrayList enemies) {
+    public void setEnemies(CopyOnWriteArrayList<Enemy> enemies) {
         this.enemies = enemies;
     }
 

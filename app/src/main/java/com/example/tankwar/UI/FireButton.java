@@ -1,15 +1,15 @@
-package com.example.tankwar;
+package com.example.tankwar.UI;
 
-import android.annotation.SuppressLint;
 import android.os.Looper;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+
+import com.example.tankwar.R;
 
 public class FireButton {
 
     private final int DELAY_MILLISECONDS = 1000;
     public ImageButton view;
-
 
     public FireButton(ImageButton fireButtonView) {
         this.view = fireButtonView;
