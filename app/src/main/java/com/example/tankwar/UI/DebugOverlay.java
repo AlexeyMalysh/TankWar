@@ -5,13 +5,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import com.example.tankwar.EnemySpawner;
 import com.example.tankwar.GameObjects.Bullet;
 import com.example.tankwar.GameObjects.Enemy;
 import com.example.tankwar.GameObjects.Player;
 
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import static com.example.tankwar.TankWarView.enemiesToSpawnPerWave;
 import static com.example.tankwar.TankWarView.fps;
 
 public class DebugOverlay {
@@ -19,12 +17,12 @@ public class DebugOverlay {
     private final Paint paint;
     private final Joystick joystick;
     private final Player player;
-    private CopyOnWriteArrayList<Enemy> enemies;
+    private EnemySpawner enemySpawner;
 
-    public DebugOverlay(Joystick joystick, Player player, CopyOnWriteArrayList<Enemy> enemies) {
+    public DebugOverlay(Joystick joystick, Player player, EnemySpawner enemySpawner) {
         this.joystick = joystick;
         this.player = player;
-        this.enemies = enemies;
+        this.enemySpawner = enemySpawner;
         paint = new Paint();
     }
 
@@ -45,10 +43,6 @@ public class DebugOverlay {
         enemyOverlay(canvas, PADDING_X * 6, PADDING_Y);
 
         drawHitBoxes(canvas);
-    }
-
-    public void setEnemies(CopyOnWriteArrayList<Enemy> enemies) {
-        this.enemies = enemies;
     }
 
     private void gameStateOverlay(Canvas canvas, int paddingX, int paddingY) {
@@ -83,8 +77,9 @@ public class DebugOverlay {
         canvas.drawText("Enemies", paddingX, paddingY, paint);
 
         setNormalText();
-        canvas.drawText("Spawned: " + enemies.size(), paddingX, paddingY * 2, paint);
-        canvas.drawText("Spawn per wave: " + enemiesToSpawnPerWave, paddingX, paddingY * 3, paint);
+        canvas.drawText("Max: " + enemySpawner.getMaxEnemies(), paddingX, paddingY * 2, paint);
+        canvas.drawText("Spawned: " + enemySpawner.getEnemies().size(), paddingX, paddingY * 3, paint);
+        canvas.drawText("Enemies per wave: " + enemySpawner.getEnemiesPerWave(), paddingX, paddingY * 4, paint);
     }
 
 
@@ -95,7 +90,7 @@ public class DebugOverlay {
             drawHitBox(canvas, bullet.getRect());
         }
 
-        for (Enemy enemy : enemies) {
+        for (Enemy enemy : enemySpawner.getEnemies()) {
             drawHitBox(canvas, enemy.getRect());
             for (Bullet bullet : enemy.getBullets()) {
                 drawHitBox(canvas, bullet.getRect());

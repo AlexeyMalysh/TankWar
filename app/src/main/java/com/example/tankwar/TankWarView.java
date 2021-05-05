@@ -33,13 +33,11 @@ public class TankWarView extends SurfaceView implements Runnable {
     public static long fps;
     private long timeThisFrame;
     private Player player;
-    private Joystick joystick;
     private FireButton fireButton;
     private Bitmap levelBg;
-    private CopyOnWriteArrayList<Enemy> enemyList;
-    public static int enemiesToSpawnPerWave = 1;
     private DebugOverlay debugOverlay;
     public static final boolean DEV_MODE = true;
+    private EnemySpawner enemySpawner;
 
     public TankWarView(Context context, Joystick joystick, FireButton fireButton) {
         super(context);
@@ -47,16 +45,15 @@ public class TankWarView extends SurfaceView implements Runnable {
         ourHolder = getHolder();
         paint = new Paint();
 
-        // Initialize joystick
-        this.joystick = joystick;
-
         float centerX = (float) MainActivity.getScreenWidth() / 2;
         float centerY = (float) MainActivity.getScreenHeight() / 2;
 
         player = new Player(context, joystick, centerX, centerY);
 
+        enemySpawner = new EnemySpawner(context, player);
+
         if (DEV_MODE) {
-            debugOverlay = new DebugOverlay(joystick, player, enemyList);
+            debugOverlay = new DebugOverlay(joystick, player, enemySpawner);
         }
 
         this.fireButton = fireButton;
@@ -103,41 +100,12 @@ public class TankWarView extends SurfaceView implements Runnable {
     private void prepareLevel() {
         levelBg = BitmapFactory.decodeResource(getResources(), R.drawable.level_1);
         levelBg = Bitmap.createScaledBitmap(levelBg, MainActivity.getScreenWidth(), MainActivity.getScreenHeight(), false);
-
-        enemyList = new CopyOnWriteArrayList<>();
-
-        spawnEnemies();
-
     }
 
-    private void spawnEnemies() {
-
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                for (int i = 0; i < enemiesToSpawnPerWave; i++) {
-                    if (enemyList.size() < 10) {
-                        spawnEnemy();
-                    }
-                }
-            }
-        }, 0, 5000);
-
-
-    }
-
-    private void spawnEnemy() {
-        enemyList.add(new Enemy(getContext(), player));
-    }
 
     private void update() {
         updatePlayer();
         updateEnemies();
-
-        if(DEV_MODE) {
-            debugOverlay.setEnemies(enemyList);
-        }
-
     }
 
     private void updatePlayer() {
@@ -149,21 +117,16 @@ public class TankWarView extends SurfaceView implements Runnable {
             bullet.update();
 
             // Detect if bullet collides with any enemies
-            for (Enemy enemy : enemyList) {
+            for (Enemy enemy : enemySpawner.getEnemies()) {
                 // If bullet collides with player it will explode and be set false
                 if (bullet.collidesWith(enemy) && bullet.isActive()) {
                     bullet.explode(enemy);
                     enemy.destroy();
                     player.incrementScore(10);
 
-                    // If player has killed 10 enemies, increase enemy spawn per wave
+                    // each time player kills 10 enemies, increase enemy spawns
                     if (player.getScore() != 0 && player.getScore() % 100 == 0) {
-                        enemiesToSpawnPerWave += 1;
-                    }
-
-                    // Add an enemy so there is always at least one on screen at all times
-                    if (enemyList.size() <= 1) {
-                        spawnEnemy();
+                        enemySpawner.increaseIntensity();
                     }
                 }
             }
@@ -180,7 +143,7 @@ public class TankWarView extends SurfaceView implements Runnable {
     private void updateEnemies() {
         CopyOnWriteArrayList<Enemy> activeEnemies = new CopyOnWriteArrayList<>();
 
-        for (Enemy enemy : enemyList) {
+        for (Enemy enemy : enemySpawner.getEnemies()) {
             enemy.update();
 
             // Create list that stores active bullets
@@ -209,7 +172,7 @@ public class TankWarView extends SurfaceView implements Runnable {
             }
         }
 
-        enemyList = activeEnemies;
+        enemySpawner.setEnemies(activeEnemies);
     }
 
     private void draw() {
@@ -221,7 +184,7 @@ public class TankWarView extends SurfaceView implements Runnable {
 
             player.draw(canvas);
 
-            for (Enemy enemy : enemyList) {
+            for (Enemy enemy : enemySpawner.getEnemies()) {
                 enemy.draw(canvas);
                 for (Bullet bullet : enemy.getBullets()) {
                     bullet.draw(canvas);
