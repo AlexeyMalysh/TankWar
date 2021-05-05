@@ -18,8 +18,6 @@ import com.example.tankwar.UI.DebugOverlay;
 import com.example.tankwar.UI.FireButton;
 import com.example.tankwar.UI.Joystick;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TankWarView extends SurfaceView implements Runnable {
@@ -153,8 +151,9 @@ public class TankWarView extends SurfaceView implements Runnable {
                 bullet.update();
 
                 // If bullet collides with player it will explode and be set false
-                if (bullet.collidesWith(player) && bullet.isActive()) {
+                if (bullet.collidesWith(player) && bullet.isActive() && !player.isInvulnerable()) {
                     bullet.explode(player);
+                    player.takeDamage();
                 }
 
                 // Any bullet that has not exploded or gone out of bounds with be looped through again

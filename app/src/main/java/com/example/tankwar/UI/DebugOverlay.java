@@ -68,8 +68,10 @@ public class DebugOverlay {
         setNormalText();
         canvas.drawText("X: " + player.getPositionX(), paddingX, paddingY * 2, paint);
         canvas.drawText("Y: " + player.getPositionY(), paddingX, paddingY * 3, paint);
-        canvas.drawText("Active Bullets: " + player.getBullets().size(), paddingX, paddingY * 4, paint);
-        canvas.drawText("Score: " + player.getScore(), paddingX, paddingY * 5, paint);
+        canvas.drawText("Health: " + player.getHealth(), paddingX, paddingY * 4, paint);
+        canvas.drawText("Invincible: " + player.isInvulnerable(), paddingX, paddingY * 5, paint);
+        canvas.drawText("Active Bullets: " + player.getBullets().size(), paddingX, paddingY * 6, paint);
+        canvas.drawText("Score: " + player.getScore(), paddingX, paddingY * 7, paint);
     }
 
     private void enemyOverlay(Canvas canvas, int paddingX, int paddingY) {

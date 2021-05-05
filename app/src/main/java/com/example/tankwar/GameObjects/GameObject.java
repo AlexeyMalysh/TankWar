@@ -17,7 +17,7 @@ public abstract class GameObject {
     protected float degrees;
     protected Matrix matrix;
     protected Bitmap bitmap;
-    private Paint paint;
+    protected Paint paint;
 
 
     public GameObject(Context context, float positionX, float positionY) {

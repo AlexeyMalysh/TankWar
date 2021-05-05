@@ -1,26 +1,42 @@
 package com.example.tankwar.GameObjects;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import com.example.tankwar.UI.Joystick;
 import com.example.tankwar.MainActivity;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.example.tankwar.TankWarView.fps;
 
 public class Player extends Tank {
 
     public final float MAX_SPEED = 250f;
+    public final int INVULNERABILITY_TIME = 1500;
     private Joystick joystick;
     private int score = 0;
+    private int health = 3;
+    private boolean invulnerable = false;
+    private Paint paint;
 
     public Player(Context context, Joystick joystick, float positionX, float positionY) {
         super(context, TankType.BLUE, positionX, positionY);
 
         this.joystick = joystick;
 
+        paint = new Paint();
+
         // Initial update is required to draw player on canvas
         updateDegrees();
         updatePosition();
+    }
+
+    // Overridden to show invulnerability frames
+    public void draw(Canvas canvas) {
+        canvas.drawBitmap(bitmap, matrix, paint);
     }
 
     public void update() {
@@ -66,5 +82,65 @@ public class Player extends Tank {
     public int getScore() {
         return score;
     }
+
+    public void takeDamage() {
+        decrementHealth(1);
+        toggleInvulnerability();
+    }
+
+    public boolean isInvulnerable() {
+        return invulnerable;
+    }
+
+    public void decrementHealth(int amount) {
+        health -= amount;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    private void toggleInvulnerability() {
+        invulnerable = true;
+
+        blinkAnimation();
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                invulnerable = false;
+            }
+        }, INVULNERABILITY_TIME);
+    }
+
+    private void blinkAnimation() {
+        Timer t = new Timer();
+
+
+        t.scheduleAtFixedRate(new TimerTask() {
+            boolean transparent = false;
+
+            @Override
+            public void run() {
+
+                if(!invulnerable) {
+                    paint.setAlpha(255);
+                    t.cancel();
+                    return;
+                }
+
+                if (transparent) {
+                    paint.setAlpha(255);
+                    transparent = false;
+                } else {
+                    paint.setAlpha(50);
+                    transparent = true;
+                }
+
+            }
+        }, 0, 100);
+
+    }
+
 
 }
