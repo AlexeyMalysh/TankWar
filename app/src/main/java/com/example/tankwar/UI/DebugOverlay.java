@@ -21,7 +21,7 @@ public class DebugOverlay {
     private final Player player;
     private CopyOnWriteArrayList<Enemy> enemies;
 
-    DebugOverlay(Joystick joystick, Player player, CopyOnWriteArrayList<Enemy> enemies) {
+    public DebugOverlay(Joystick joystick, Player player, CopyOnWriteArrayList<Enemy> enemies) {
         this.joystick = joystick;
         this.player = player;
         this.enemies = enemies;
