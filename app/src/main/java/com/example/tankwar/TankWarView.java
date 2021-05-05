@@ -35,9 +35,11 @@ public class TankWarView extends SurfaceView implements Runnable {
     private FireButton fireButton;
     private Bitmap levelBg;
     private CopyOnWriteArrayList<Enemy> enemyList;
-    private int enemiesToSpawnPerWave = 1;
+    public static int enemiesToSpawnPerWave = 1;
+    private DebugOverlay debugOverlay;
+    public static final boolean DEV_MODE = true;
 
-    public TankWarView(Context context, int screenX, int screenY, Joystick joystick, FireButton fireButton) {
+    public TankWarView(Context context, Joystick joystick, FireButton fireButton) {
         super(context);
 
         ourHolder = getHolder();
@@ -46,10 +48,14 @@ public class TankWarView extends SurfaceView implements Runnable {
         // Initialize joystick
         this.joystick = joystick;
 
-        float centerX = (float) screenX / 2;
-        float centerY = (float) screenY / 2;
+        float centerX = (float) MainActivity.getScreenWidth() / 2;
+        float centerY = (float) MainActivity.getScreenHeight() / 2;
 
         player = new Player(context, joystick, centerX, centerY);
+
+        if (DEV_MODE) {
+            debugOverlay = new DebugOverlay(joystick, player, enemyList);
+        }
 
         this.fireButton = fireButton;
         initFireButton();
@@ -107,8 +113,8 @@ public class TankWarView extends SurfaceView implements Runnable {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                for(int i = 0; i < enemiesToSpawnPerWave; i++) {
-                    if(enemyList.size() < 10) {
+                for (int i = 0; i < enemiesToSpawnPerWave; i++) {
+                    if (enemyList.size() < 10) {
                         spawnEnemy();
                     }
                 }
@@ -125,6 +131,11 @@ public class TankWarView extends SurfaceView implements Runnable {
     private void update() {
         updatePlayer();
         updateEnemies();
+
+        if(DEV_MODE) {
+            debugOverlay.setEnemies(enemyList);
+        }
+
     }
 
     private void updatePlayer() {
@@ -144,7 +155,7 @@ public class TankWarView extends SurfaceView implements Runnable {
                     player.incrementScore(10);
 
                     // If player has killed 10 enemies, increase enemy spawn per wave
-                    if(player.getScore() != 0 && player.getScore() % 100 == 0) {
+                    if (player.getScore() != 0 && player.getScore() % 100 == 0) {
                         enemiesToSpawnPerWave += 1;
                     }
 
@@ -219,8 +230,7 @@ public class TankWarView extends SurfaceView implements Runnable {
                 bullet.draw(canvas);
             }
 
-            debugOverlay();
-
+            if (DEV_MODE) debugOverlay.draw(canvas);
 
             ourHolder.unlockCanvasAndPost(canvas);
         }
@@ -239,53 +249,6 @@ public class TankWarView extends SurfaceView implements Runnable {
 
             return true;
         });
-    }
-
-    private void debugOverlay() {
-
-        paint.setStyle(Paint.Style.FILL);
-
-        paint.setColor(Color.argb(255, 0, 0, 0));
-        paint.setColor(Color.argb(255, 0, 0, 0));
-        paint.setTextSize(40);
-        canvas.drawText("FPS:" + fps, 400, 50, paint);
-        canvas.drawText("Degrees: " + joystick.getDegrees(), 700, 50, paint);
-        canvas.drawText("Strength: " + joystick.getStrength(), 700, 100, paint);
-        canvas.drawText("Joystick X: " + joystick.getPositionX(), 1000, 50, paint);
-        canvas.drawText("Joystick Y: " + joystick.getPositionY(), 1000, 100, paint);
-        canvas.drawText("Player X: " + player.getPositionX(), 1500, 50, paint);
-        canvas.drawText("Player Y: " + (player.getPositionY()), 1500, 100, paint);
-        canvas.drawText("Active player bullets: " + player.getBullets().size(), 1500, 300, paint);
-        canvas.drawText("Enemies on screen: " + enemyList.size(), 1500, 400, paint);
-        canvas.drawText("Player score: " + player.getScore(), 1500, 500, paint);
-        canvas.drawText("Enemies to be spawn per wave: " + enemiesToSpawnPerWave, 1500, 550, paint);
-
-
-        if (player.isOutOfBounds()) {
-            canvas.drawText("Player is out of bounds ", 1500, 350, paint);
-        } else {
-            canvas.drawText("Player is in bounds ", 1500, 350, paint);
-        }
-
-        drawHitBox(player.getRect());
-
-        for (Bullet bullet : player.getBullets()) {
-            drawHitBox(bullet.getRect());
-        }
-//
-        for (Enemy enemy : enemyList) {
-            drawHitBox(enemy.getRect());
-            for (Bullet bullet : enemy.getBullets()) {
-                drawHitBox(bullet.getRect());
-            }
-        }
-    }
-
-    private void drawHitBox(Rect rect) {
-        paint.setColor(Color.argb(255, 255, 0, 0));
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(3f);
-        canvas.drawRect(rect, paint);
     }
 
 }

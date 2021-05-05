@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         FireButton fireButton = new FireButton(fireButtonView);
 
         // Init game
-        tankWarView = new TankWarView(getApplicationContext(), getScreenWidth(), getScreenHeight(), joystick, fireButton);
+        tankWarView = new TankWarView(getApplicationContext(), joystick, fireButton);
 
         // Add views
         layout.addView(tankWarView);
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static float getDensity() {
-        return  Resources.getSystem().getDisplayMetrics().density;
+        return Resources.getSystem().getDisplayMetrics().density;
     }
 
 }
