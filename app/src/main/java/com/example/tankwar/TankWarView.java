@@ -16,6 +16,7 @@ import com.example.tankwar.GameObjects.Enemy;
 import com.example.tankwar.GameObjects.Player;
 import com.example.tankwar.UI.DebugOverlay;
 import com.example.tankwar.UI.FireButton;
+import com.example.tankwar.UI.HealthBar;
 import com.example.tankwar.UI.Joystick;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -34,8 +35,9 @@ public class TankWarView extends SurfaceView implements Runnable {
     private FireButton fireButton;
     private Bitmap levelBg;
     private DebugOverlay debugOverlay;
-    public static final boolean DEV_MODE = true;
+    public static final boolean DEV_MODE = false;
     private EnemySpawner enemySpawner;
+    private HealthBar healthBar;
 
     public TankWarView(Context context, Joystick joystick, FireButton fireButton) {
         super(context);
@@ -47,6 +49,8 @@ public class TankWarView extends SurfaceView implements Runnable {
         float centerY = (float) MainActivity.getScreenHeight() / 2;
 
         player = new Player(context, joystick, centerX, centerY);
+
+        healthBar = new HealthBar(context, player);
 
         enemySpawner = new EnemySpawner(context, player);
 
@@ -193,6 +197,8 @@ public class TankWarView extends SurfaceView implements Runnable {
             for (Bullet bullet : player.getBullets()) {
                 bullet.draw(canvas);
             }
+
+            healthBar.draw(canvas);
 
             if (DEV_MODE) debugOverlay.draw(canvas);
 
