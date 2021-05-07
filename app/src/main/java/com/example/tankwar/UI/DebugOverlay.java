@@ -9,6 +9,7 @@ import com.example.tankwar.EnemySpawner;
 import com.example.tankwar.GameObjects.Bullet;
 import com.example.tankwar.GameObjects.Enemy;
 import com.example.tankwar.GameObjects.Player;
+import com.example.tankwar.GameObjects.PropList;
 
 import static com.example.tankwar.TankWarView.fps;
 
@@ -18,11 +19,13 @@ public class DebugOverlay {
     private final Joystick joystick;
     private final Player player;
     private EnemySpawner enemySpawner;
+    private final PropList propList;
 
-    public DebugOverlay(Joystick joystick, Player player, EnemySpawner enemySpawner) {
+    public DebugOverlay(Joystick joystick, Player player, EnemySpawner enemySpawner, PropList propList) {
         this.joystick = joystick;
         this.player = player;
         this.enemySpawner = enemySpawner;
+        this.propList = propList;
         paint = new Paint();
     }
 
@@ -41,6 +44,8 @@ public class DebugOverlay {
         playerOverlay(canvas, PADDING_X * 4, PADDING_Y);
 
         enemyOverlay(canvas, PADDING_X * 6, PADDING_Y);
+
+        propOverlay(canvas, (int) (PADDING_X * 8.5), PADDING_Y);
 
         drawHitBoxes(canvas);
     }
@@ -82,6 +87,14 @@ public class DebugOverlay {
         canvas.drawText("Max: " + enemySpawner.getMaxEnemies(), paddingX, paddingY * 2, paint);
         canvas.drawText("Spawned: " + enemySpawner.getEnemies().size(), paddingX, paddingY * 3, paint);
         canvas.drawText("Enemies per wave: " + enemySpawner.getEnemiesPerWave(), paddingX, paddingY * 4, paint);
+    }
+
+    private void propOverlay(Canvas canvas, int paddingX, int paddingY) {
+        setBoldText();
+        canvas.drawText("Props", paddingX, paddingY, paint);
+
+        setNormalText();
+        canvas.drawText("On screen: " + propList.getProps().size(), paddingX, paddingY * 2, paint);
     }
 
 

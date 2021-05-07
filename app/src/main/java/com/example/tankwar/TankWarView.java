@@ -15,13 +15,12 @@ import com.example.tankwar.GameObjects.Bullet;
 import com.example.tankwar.GameObjects.Enemy;
 import com.example.tankwar.GameObjects.Player;
 import com.example.tankwar.GameObjects.Prop;
+import com.example.tankwar.GameObjects.PropList;
 import com.example.tankwar.UI.DebugOverlay;
 import com.example.tankwar.UI.FireButton;
 import com.example.tankwar.UI.HealthBar;
 import com.example.tankwar.UI.Joystick;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TankWarView extends SurfaceView implements Runnable {
@@ -41,7 +40,7 @@ public class TankWarView extends SurfaceView implements Runnable {
     public static final boolean DEV_MODE = true;
     private EnemySpawner enemySpawner;
     private HealthBar healthBar;
-    private ArrayList<Prop> propList;
+    private PropList propList;
 
     public TankWarView(Context context, Joystick joystick, FireButton fireButton) {
         super(context);
@@ -58,10 +57,10 @@ public class TankWarView extends SurfaceView implements Runnable {
 
         enemySpawner = new EnemySpawner(context, player);
 
-        propList = new ArrayList<>();
+        propList = new PropList(context);
 
         if (DEV_MODE) {
-            debugOverlay = new DebugOverlay(joystick, player, enemySpawner);
+            debugOverlay = new DebugOverlay(joystick, player, enemySpawner, propList);
         }
 
         this.fireButton = fireButton;
@@ -108,30 +107,20 @@ public class TankWarView extends SurfaceView implements Runnable {
     private void prepareLevel() {
         levelBg = BitmapFactory.decodeResource(getResources(), R.drawable.level_bg);
         levelBg = Bitmap.createScaledBitmap(levelBg, MainActivity.getScreenWidth(), MainActivity.getScreenHeight(), false);
-
-        propList = new ArrayList<>(Arrays.asList(
-                new Prop(getContext(), 266, 80, R.drawable.tree_brown, true),
-                new Prop(getContext(), 287, 322, R.drawable.twigs_brown, false),
-                new Prop(getContext(), 220, 300, R.drawable.tree_brown, true),
-                new Prop(getContext(), 540, 260, 90, R.drawable.sandbang_brown, true),
-                new Prop(getContext(), 545, 300, -45, R.drawable.sandbang_brown, true),
-                new Prop(getContext(), 840, 80, R.drawable.fence_red_vertical, false)
-        ));
-
     }
 
 
     private void update() {
         updatePlayer();
         updateEnemies();
-        updateProps();
+        propList.update();
     }
 
     private void updatePlayer() {
         player.update();
 
 
-        for (Prop prop : propList) {
+        for (Prop prop : propList.getProps()) {
             // If player collides with prop prevent movement in that direction
             if (player.collidesWith(prop) && prop.isRigid()) {
                 player.stop();
@@ -164,9 +153,9 @@ public class TankWarView extends SurfaceView implements Runnable {
                 }
             }
 
-            for (Prop prop : propList) {
+            for (Prop prop : propList.getProps()) {
                 // If bullet collides with prop it will explode and be removed
-                if (bullet.collidesWith(prop) && bullet.isActive()) {
+                if (bullet.collidesWith(prop) && bullet.isActive() && prop.isRigid()) {
                     bullet.explode(prop);
                 }
             }
@@ -187,7 +176,7 @@ public class TankWarView extends SurfaceView implements Runnable {
         for (Enemy enemy : enemySpawner.getEnemies()) {
             enemy.update();
 
-            for (Prop prop : propList) {
+            for (Prop prop : propList.getProps()) {
                 // If player collides with prop prevent movement in that direction
                 if (enemy.collidesWith(prop) && prop.isRigid()) {
                     enemy.stop();
@@ -203,9 +192,9 @@ public class TankWarView extends SurfaceView implements Runnable {
             for (Bullet bullet : enemy.getBullets()) {
                 bullet.update();
 
-                for (Prop prop : propList) {
+                for (Prop prop : propList.getProps()) {
                     // If bullet collides with prop it will explode and be removed
-                    if (bullet.collidesWith(prop) && bullet.isActive()) {
+                    if (bullet.collidesWith(prop) && bullet.isActive() && prop.isRigid()) {
                         bullet.explode(prop);
                     }
                 }
@@ -237,11 +226,6 @@ public class TankWarView extends SurfaceView implements Runnable {
         enemySpawner.setEnemies(activeEnemies);
     }
 
-    private void updateProps() {
-        for (Prop prop : propList) {
-            prop.update();
-        }
-    }
 
     private void draw() {
 
@@ -251,7 +235,7 @@ public class TankWarView extends SurfaceView implements Runnable {
             canvas.drawBitmap(levelBg, 0, 0, paint);
 
             // TODO: This needs ordered correctly
-            for (Prop prop : propList) {
+            for (Prop prop : propList.getProps()) {
                 prop.draw(canvas);
             }
 
