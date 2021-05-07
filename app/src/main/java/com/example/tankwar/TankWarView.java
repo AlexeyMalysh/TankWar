@@ -14,11 +14,14 @@ import android.view.SurfaceView;
 import com.example.tankwar.GameObjects.Bullet;
 import com.example.tankwar.GameObjects.Enemy;
 import com.example.tankwar.GameObjects.Player;
+import com.example.tankwar.GameObjects.Prop;
 import com.example.tankwar.UI.DebugOverlay;
 import com.example.tankwar.UI.FireButton;
 import com.example.tankwar.UI.HealthBar;
 import com.example.tankwar.UI.Joystick;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class TankWarView extends SurfaceView implements Runnable {
@@ -35,9 +38,10 @@ public class TankWarView extends SurfaceView implements Runnable {
     private FireButton fireButton;
     private Bitmap levelBg;
     private DebugOverlay debugOverlay;
-    public static final boolean DEV_MODE = false;
+    public static final boolean DEV_MODE = true;
     private EnemySpawner enemySpawner;
     private HealthBar healthBar;
+    private ArrayList<Prop> propList;
 
     public TankWarView(Context context, Joystick joystick, FireButton fireButton) {
         super(context);
@@ -53,6 +57,8 @@ public class TankWarView extends SurfaceView implements Runnable {
         healthBar = new HealthBar(context, player);
 
         enemySpawner = new EnemySpawner(context, player);
+
+        propList = new ArrayList<>();
 
         if (DEV_MODE) {
             debugOverlay = new DebugOverlay(joystick, player, enemySpawner);
@@ -100,18 +106,43 @@ public class TankWarView extends SurfaceView implements Runnable {
 
 
     private void prepareLevel() {
-        levelBg = BitmapFactory.decodeResource(getResources(), R.drawable.level_1);
+        levelBg = BitmapFactory.decodeResource(getResources(), R.drawable.level_bg);
         levelBg = Bitmap.createScaledBitmap(levelBg, MainActivity.getScreenWidth(), MainActivity.getScreenHeight(), false);
+
+        propList = new ArrayList<>(Arrays.asList(
+                new Prop(getContext(), 266, 80, R.drawable.tree_brown, true),
+                new Prop(getContext(), 287, 322, R.drawable.twigs_brown, false),
+                new Prop(getContext(), 220, 300, R.drawable.tree_brown, true),
+                new Prop(getContext(), 540, 260, 90, R.drawable.sandbang_brown, true),
+                new Prop(getContext(), 545, 300, -45, R.drawable.sandbang_brown, true),
+                new Prop(getContext(), 840, 80, R.drawable.fence_red_vertical, false)
+        ));
+
     }
 
 
     private void update() {
         updatePlayer();
         updateEnemies();
+        updateProps();
     }
 
     private void updatePlayer() {
         player.update();
+
+
+        for (Prop prop : propList) {
+            // If player collides with prop prevent movement in that direction
+            if (player.collidesWith(prop) && prop.isRigid()) {
+                player.stop();
+            }
+        }
+
+        for (Enemy enemy : enemySpawner.getEnemies()) {
+            if (player.collidesWith(enemy)) {
+                player.stop();
+            }
+        }
 
         CopyOnWriteArrayList<Bullet> activeBullets = new CopyOnWriteArrayList<>();
 
@@ -133,6 +164,13 @@ public class TankWarView extends SurfaceView implements Runnable {
                 }
             }
 
+            for (Prop prop : propList) {
+                // If bullet collides with prop it will explode and be removed
+                if (bullet.collidesWith(prop) && bullet.isActive()) {
+                    bullet.explode(prop);
+                }
+            }
+
             // Any bullet that has not exploded or gone out of bounds with be looped through again
             if (!bullet.isDisposed()) {
                 activeBullets.add(bullet);
@@ -145,14 +183,32 @@ public class TankWarView extends SurfaceView implements Runnable {
     private void updateEnemies() {
         CopyOnWriteArrayList<Enemy> activeEnemies = new CopyOnWriteArrayList<>();
 
+
         for (Enemy enemy : enemySpawner.getEnemies()) {
             enemy.update();
+
+            for (Prop prop : propList) {
+                // If player collides with prop prevent movement in that direction
+                if (enemy.collidesWith(prop) && prop.isRigid()) {
+                    enemy.stop();
+                    enemy.setFiring(false);
+                } else {
+                    enemy.setFiring(true);
+                }
+            }
 
             // Create list that stores active bullets
             CopyOnWriteArrayList<Bullet> enemyActiveBullets = new CopyOnWriteArrayList<>();
 
             for (Bullet bullet : enemy.getBullets()) {
                 bullet.update();
+
+                for (Prop prop : propList) {
+                    // If bullet collides with prop it will explode and be removed
+                    if (bullet.collidesWith(prop) && bullet.isActive()) {
+                        bullet.explode(prop);
+                    }
+                }
 
                 // If bullet collides with player it will explode and be set false
                 if (bullet.collidesWith(player) && bullet.isActive() && !player.isInvulnerable()) {
@@ -164,7 +220,10 @@ public class TankWarView extends SurfaceView implements Runnable {
                 if (!bullet.isDisposed()) {
                     enemyActiveBullets.add(bullet);
                 }
+
+
             }
+
 
             // Update enemy bullets to bullets that are still active
             enemy.setBullets(enemyActiveBullets);
@@ -178,6 +237,12 @@ public class TankWarView extends SurfaceView implements Runnable {
         enemySpawner.setEnemies(activeEnemies);
     }
 
+    private void updateProps() {
+        for (Prop prop : propList) {
+            prop.update();
+        }
+    }
+
     private void draw() {
 
         if (ourHolder.getSurface().isValid()) {
@@ -185,7 +250,13 @@ public class TankWarView extends SurfaceView implements Runnable {
             canvas = ourHolder.lockCanvas();
             canvas.drawBitmap(levelBg, 0, 0, paint);
 
+            // TODO: This needs ordered correctly
+            for (Prop prop : propList) {
+                prop.draw(canvas);
+            }
+
             player.draw(canvas);
+
 
             for (Enemy enemy : enemySpawner.getEnemies()) {
                 enemy.draw(canvas);
@@ -197,6 +268,7 @@ public class TankWarView extends SurfaceView implements Runnable {
             for (Bullet bullet : player.getBullets()) {
                 bullet.draw(canvas);
             }
+
 
             healthBar.draw(canvas);
 

@@ -17,10 +17,11 @@ public class Enemy extends Tank {
     private final int MIN_FIRE_RATE = 2500;
     private final int MIN_STOPPING_DISTANCE = 200;
     private final float SPEED = 100f;
+    private boolean firing = true;
     private Player player;
     private float stoppingDistance;
 
-    public Enemy(Context context, Player player ) {
+    public Enemy(Context context, Player player) {
         super(context, TankType.BLACK, 0, 0);
         this.player = player;
 
@@ -39,14 +40,14 @@ public class Enemy extends Tank {
 
         // Regardless of collisions and distance move towards player if out of bounds
         if (isOutOfBounds()) {
+            firing = false;
             moveTowardsPlayer();
             return;
         }
 
-        // stop movement if colliding or within stopped distance of player
-        if (!collidesWith(player) && getDistanceFrom(player) > stoppingDistance) {
-            moveTowardsPlayer();
-        } else {
+        moveTowardsPlayer();
+
+        if (collidesWith(player)) {
             stop();
         }
     }
@@ -69,10 +70,23 @@ public class Enemy extends Tank {
         updatePosition();
     }
 
-    private void stop() {
-        setPositionX(getPositionX());
-        setPositionY(getPositionY());
+    // TODO: Needs refactored
+    public void stop() {
+
+        float degrees = getDegreesFrom(player);
+
+        float radianX = (float) Math.cos(degrees * Math.PI / 180);
+        float radianY = (float) Math.sin(degrees * Math.PI / 180);
+
+        setPositionX(getPositionX() - (radianX * SPEED / fps));
+        setPositionY(getPositionY() + (radianY * SPEED / fps));
+
+        updateDegrees();
         updatePosition();
+    }
+
+    public void setFiring(boolean firing) {
+        this.firing = firing;
     }
 
     private void initFiring() {
@@ -84,7 +98,11 @@ public class Enemy extends Tank {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (!isOutOfBounds() && getDistanceFrom(player) <= stoppingDistance) {
+//                if (!isOutOfBounds() && getDistanceFrom(player) <= stoppingDistance) {
+//                    fire();
+//                }
+
+                if (firing) {
                     fire();
                 }
             }

@@ -75,6 +75,13 @@ public class Player extends Tank {
         }
     }
 
+    public void stop() {
+        setPositionX(getPositionX() - (joystick.getPositionX() * MAX_SPEED / fps));
+        setPositionY(getPositionY() + (joystick.getPositionY() * MAX_SPEED / fps));
+        updateDegrees();
+        updatePosition();
+    }
+
     public void incrementScore(int amount) {
         score += amount;
     }
