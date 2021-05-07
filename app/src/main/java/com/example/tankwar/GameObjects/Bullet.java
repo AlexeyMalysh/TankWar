@@ -11,7 +11,7 @@ import static com.example.tankwar.TankWarView.fps;
 
 public class Bullet extends GameObject {
 
-    private float MAX_SPEED = 600f;
+    private float speed;
     private float radianX;
     private float radianY;
     private boolean active = true;
@@ -19,8 +19,9 @@ public class Bullet extends GameObject {
 
 
     public Bullet(Context context, Tank tank) {
-
         super(context, tank.getPositionX(), tank.getPositionY());
+
+        this.speed = tank.getSpeed() * 5;
 
         setBitmap(getBulletBitmapId(tank.getType()));
 
@@ -52,8 +53,8 @@ public class Bullet extends GameObject {
             return;
         }
 
-        setPositionX(getPositionX() + (radianX * MAX_SPEED / fps));
-        setPositionY(getPositionY() - (radianY * MAX_SPEED / fps));
+        setPositionX(getPositionX() + (radianX * speed / fps));
+        setPositionY(getPositionY() - (radianY * speed / fps));
         updateDegrees();
         updatePosition();
     }

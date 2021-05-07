@@ -4,11 +4,14 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.example.tankwar.EnemySpawner;
 import com.example.tankwar.UI.Joystick;
 import com.example.tankwar.MainActivity;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.example.tankwar.TankWarView.fps;
 
@@ -22,10 +25,11 @@ public class Player extends Tank {
     private boolean invulnerable = false;
     private Paint paint;
 
+
     public Player(Context context, Joystick joystick, float positionX, float positionY) {
         super(context, TankType.BLUE, positionX, positionY);
-
         this.joystick = joystick;
+        this.speed = 200f;
 
         paint = new Paint();
 
@@ -39,25 +43,58 @@ public class Player extends Tank {
         canvas.drawBitmap(bitmap, matrix, paint);
     }
 
-    public void update() {
+    public void update(List<GameObject> objects) {
 
         // Only update player if user is touching joystick
-        if (joystick.getStrength() == 0) return;
+        if (joystick.getStrength() > 0) {
+            setDegrees(joystick.getDegrees());
 
-        checkBounds();
+            setPositionX(getPositionX() + (joystick.getPositionX() * getSpeed() / fps));
+            setPositionY(getPositionY() - (joystick.getPositionY() * getSpeed() / fps));
 
-        setDegrees(joystick.getDegrees());
-
-        setPositionX(getPositionX() + (joystick.getPositionX() * MAX_SPEED / fps));
-        setPositionY(getPositionY() - (joystick.getPositionY() * MAX_SPEED / fps));
+            checkBounds();
+            checkCollisions(objects);
+        }
 
         updateDegrees();
         updatePosition();
+
+        updateBullets(objects);
+    }
+
+
+    private void updateBullets(List<GameObject> objects) {
+        CopyOnWriteArrayList<Bullet> activeBullets = new CopyOnWriteArrayList<>();
+
+        for (Bullet bullet : getBullets()) {
+
+            bullet.update();
+
+            for (GameObject object : objects) {
+
+                if (object instanceof Player) continue;
+
+                if (!bullet.isActive() || !bullet.collidesWith(object)) continue;
+
+                bullet.explode(object);
+
+                if (object instanceof Enemy) {
+                    ((Enemy) object).destroy();
+                    incrementScore(10);
+                }
+
+            }
+
+            if (!bullet.isDisposed()) {
+                activeBullets.add(bullet);
+            }
+        }
+
+        setBullets(activeBullets);
     }
 
 
     public void checkBounds() {
-
         if (isOutOfBoundsX()) {
             if (getPositionX() > 1) {
                 setPositionX(0);
@@ -75,6 +112,15 @@ public class Player extends Tank {
         }
     }
 
+    public void checkCollisions(List<GameObject> objects) {
+        for (GameObject object : objects) {
+            if (collidesWith(object) && !(object instanceof Player)) {
+                stop();
+            }
+        }
+    }
+
+    // Reverses direction user is trying to move which stops player
     public void stop() {
         setPositionX(getPositionX() - (joystick.getPositionX() * MAX_SPEED / fps));
         setPositionY(getPositionY() + (joystick.getPositionY() * MAX_SPEED / fps));
@@ -130,7 +176,7 @@ public class Player extends Tank {
             @Override
             public void run() {
 
-                if(!invulnerable) {
+                if (!invulnerable) {
                     paint.setAlpha(255);
                     t.cancel();
                     return;

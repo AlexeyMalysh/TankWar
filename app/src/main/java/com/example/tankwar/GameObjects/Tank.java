@@ -14,6 +14,7 @@ public abstract class Tank extends GameObject {
     private Context context;
     private TankType type;
     private boolean disposed = false;
+    protected float speed;
 
     public Tank(Context context, TankType type, float positionX, float positionY) {
         super(context, positionX, positionY);
@@ -62,6 +63,10 @@ public abstract class Tank extends GameObject {
                 return R.drawable.tank_dark;
         }
         return 0;
+    }
+
+    public float getSpeed() {
+        return this.speed;
     }
 
 }

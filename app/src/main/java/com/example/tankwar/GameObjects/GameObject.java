@@ -27,8 +27,10 @@ public abstract class GameObject {
         this.context = context;
     }
 
-    // Update logic must be implemented for each GameObject
-    public abstract void update();
+    public void update() {
+        updateDegrees();
+        updatePosition();
+    };
 
     //    Every GameObject must be drawn in TankWarView
     public void draw(Canvas canvas) {

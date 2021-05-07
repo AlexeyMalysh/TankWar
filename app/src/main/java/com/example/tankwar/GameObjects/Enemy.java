@@ -4,54 +4,85 @@ import android.content.Context;
 
 import com.example.tankwar.MainActivity;
 
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static com.example.tankwar.TankWarView.fps;
 
 public class Enemy extends Tank {
 
-    private final int MAX_STOPPING_DISTANCE = MainActivity.getScreenWidth() / 2;
     private final int MAX_FIRE_RATE = 5000;
     private final int MIN_FIRE_RATE = 2500;
-    private final int MIN_STOPPING_DISTANCE = 200;
-    private final float SPEED = 100f;
     private boolean firing = true;
     private Player player;
-    private float stoppingDistance;
 
     public Enemy(Context context, Player player) {
         super(context, TankType.BLACK, 0, 0);
         this.player = player;
+        this.speed = 125f;
 
         setSpawnPoint();
         updateDegrees();
         updatePosition();
         initFiring();
-
-        // Random distance enemy stopping distance for variation
-        Random rand = new Random();
-        stoppingDistance = rand.nextInt(MAX_STOPPING_DISTANCE - MIN_STOPPING_DISTANCE + 1) + MIN_STOPPING_DISTANCE;
     }
 
-    public void update() {
+    public void update(List<GameObject> objects) {
+        firing = true;
         turnTowardsPlayer();
-
-        // Regardless of collisions and distance move towards player if out of bounds
-        if (isOutOfBounds()) {
-            firing = false;
-            moveTowardsPlayer();
-            return;
-        }
-
         moveTowardsPlayer();
-
-        if (collidesWith(player)) {
-            stop();
-        }
+        updateDegrees();
+        updatePosition();
+        checkCollisions(objects);
+        updateBullets(objects);
     }
 
+    private void updateBullets(List<GameObject> objects) {
+        CopyOnWriteArrayList<Bullet> activeBullets = new CopyOnWriteArrayList<>();
+
+        for (Bullet bullet : getBullets()) {
+
+            bullet.update();
+
+            for (GameObject object : objects) {
+
+                if (object instanceof Enemy) continue;
+
+                if (!bullet.isActive() || !bullet.collidesWith(object)) continue;
+
+                bullet.explode(object);
+
+                if (!(object instanceof Player)) continue;
+
+                Player player = (Player) object;
+
+                if (!player.isInvulnerable()) {
+                    player.takeDamage();
+                }
+            }
+
+            if (!bullet.isDisposed()) {
+                activeBullets.add(bullet);
+            }
+        }
+
+        setBullets(activeBullets);
+    }
+
+    public void checkCollisions(List<GameObject> objects) {
+        for (GameObject object : objects) {
+            if (collidesWith(object) && !(object instanceof Enemy)) {
+                stop();
+            }
+
+            if (collidesWith(object) && object instanceof Prop) {
+                firing = false;
+            }
+        }
+    }
 
     private void turnTowardsPlayer() {
         setDegrees(getDegreesFrom(player));
@@ -64,8 +95,8 @@ public class Enemy extends Tank {
         float radianX = (float) Math.cos(degrees * Math.PI / 180);
         float radianY = (float) Math.sin(degrees * Math.PI / 180);
 
-        setPositionX(getPositionX() + (radianX * SPEED / fps));
-        setPositionY(getPositionY() - (radianY * SPEED / fps));
+        setPositionX(getPositionX() + (radianX * speed / fps));
+        setPositionY(getPositionY() - (radianY * speed / fps));
 
         updatePosition();
     }
@@ -78,19 +109,14 @@ public class Enemy extends Tank {
         float radianX = (float) Math.cos(degrees * Math.PI / 180);
         float radianY = (float) Math.sin(degrees * Math.PI / 180);
 
-        setPositionX(getPositionX() - (radianX * SPEED / fps));
-        setPositionY(getPositionY() + (radianY * SPEED / fps));
+        setPositionX(getPositionX() - (radianX * speed / fps));
+        setPositionY(getPositionY() + (radianY * speed / fps));
 
         updateDegrees();
         updatePosition();
     }
 
-    public void setFiring(boolean firing) {
-        this.firing = firing;
-    }
-
     private void initFiring() {
-
         Random rand = new Random();
 
         int fireRate = rand.nextInt(MAX_FIRE_RATE - MIN_FIRE_RATE + 1) + MIN_FIRE_RATE;
@@ -98,10 +124,6 @@ public class Enemy extends Tank {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-//                if (!isOutOfBounds() && getDistanceFrom(player) <= stoppingDistance) {
-//                    fire();
-//                }
-
                 if (firing) {
                     fire();
                 }
