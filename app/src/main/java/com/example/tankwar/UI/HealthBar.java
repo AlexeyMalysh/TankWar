@@ -15,10 +15,9 @@ import com.example.tankwar.R;
 public class HealthBar {
 
     private Bitmap bitmap;
-    private Paint paint;
-    private Player player;
-
-    // TODO: Needs refactored
+    private final Paint paint;
+    private final Player player;
+    
     public HealthBar(Context context, Player player) {
         this.bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pixel_heart);
         this.bitmap = Bitmap.createScaledBitmap(bitmap, (int) (MainActivity.getScreenWidth() / 30), (int) (MainActivity.getScreenWidth() / 30), false);

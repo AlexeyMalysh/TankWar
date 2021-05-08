@@ -8,7 +8,6 @@ import com.example.tankwar.R;
 
 public class FireButton {
 
-    private final int DELAY_MILLISECONDS = 1000;
     public ImageButton view;
 
     public FireButton(ImageButton fireButtonView) {
@@ -23,12 +22,14 @@ public class FireButton {
         view.setEnabled(false);
         updateImage(false);
 
+        int delayMilliseconds = 1000;
+
         new android.os.Handler(Looper.getMainLooper()).postDelayed(
                 () -> {
                     view.setEnabled(true);
                     updateImage(true);
                 },
-                DELAY_MILLISECONDS);
+                delayMilliseconds);
     }
 
     private void updateImage(boolean isActive) {

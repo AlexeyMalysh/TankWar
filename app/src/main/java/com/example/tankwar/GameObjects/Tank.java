@@ -8,6 +8,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static com.example.tankwar.TankWarView.fps;
+
 public abstract class Tank extends GameObject {
 
     private CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<>();
@@ -17,11 +19,16 @@ public abstract class Tank extends GameObject {
     protected float speed;
 
     public Tank(Context context, TankType type, float positionX, float positionY) {
-        super(context, positionX, positionY);
+        super(context, positionX, positionY, true);
         this.context = context;
         this.type = type;
 
         setBitmap(getTankBitmapId(type));
+    }
+
+    protected void stop() {
+        setPositionX(getPositionX() - (calculateRadianX() * speed / fps));
+        setPositionY(getPositionY() + (calculateRadianY() * speed / fps));
     }
 
     public void fire() {
@@ -65,8 +72,17 @@ public abstract class Tank extends GameObject {
         return 0;
     }
 
-    public float getSpeed() {
+
+    protected float getSpeed() {
         return this.speed;
+    }
+
+    protected float calculateRadianX() {
+        return (float) Math.cos(getDegrees() * Math.PI / 180);
+    }
+
+    protected float calculateRadianY() {
+        return (float) Math.sin(getDegrees() * Math.PI / 180);
     }
 
 }

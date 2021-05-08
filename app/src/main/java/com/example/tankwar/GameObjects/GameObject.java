@@ -12,46 +12,53 @@ import com.example.tankwar.MainActivity;
 
 public abstract class GameObject {
     protected Context context;
+    protected Bitmap bitmap;
+    protected Matrix matrix;
+    protected Paint paint;
     protected float positionX;
     protected float positionY;
     protected float degrees;
-    protected Matrix matrix;
-    protected Bitmap bitmap;
-    protected Paint paint;
+    protected boolean rigid;
 
-
-    public GameObject(Context context, float positionX, float positionY) {
+    public GameObject(Context context, float positionX, float positionY, boolean rigid) {
+        this.context = context;
+        this.matrix = new Matrix();
         this.positionX = positionX;
         this.positionY = positionY;
-        this.matrix = new Matrix();
-        this.context = context;
+        this.rigid = rigid;
+    }
+
+    public void setBitmap(int id) {
+        this.bitmap = BitmapFactory.decodeResource(context.getResources(), id);
+        this.bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() / 2), (int) (bitmap.getHeight() / 2), false);
+    }
+
+    public void draw(Canvas canvas) {
+        canvas.drawBitmap(bitmap, matrix, paint);
     }
 
     public void update() {
         updateDegrees();
         updatePosition();
-    };
-
-    //    Every GameObject must be drawn in TankWarView
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(bitmap, matrix, paint);
     }
 
-    // This is required
-    public void setBitmap(int id) {
-        this.bitmap = BitmapFactory.decodeResource(context.getResources(), id);
-        this.bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() / 2), (int) (bitmap.getHeight() / 2), false);
-
-
+    public void updatePosition() {
+        matrix.postTranslate(positionX, positionY);
     }
 
-    //    Helper methods
-    public float getPositionY() {
-        return positionY;
+    public void updateDegrees() {
+        matrix.setRotate(-degrees, (float) getWidth() / 2, (float) getHeight() / 2);
     }
+
+
+    // Position Helpers -----------------------------------------
 
     public float getPositionX() {
         return positionX;
+    }
+
+    public float getPositionY() {
+        return positionY;
     }
 
     public void setPositionX(float x) {
@@ -69,6 +76,9 @@ public abstract class GameObject {
     public void setDegrees(float degrees) {
         this.degrees = degrees;
     }
+
+
+    // Dimension Helpers -----------------------------------------
 
     public int getWidth() {
         return bitmap.getWidth();
@@ -95,7 +105,7 @@ public abstract class GameObject {
         return new Rect(left, top, right, bottom);
     }
 
-    // Calculations between objects
+    // Bounds Calculations  -----------------------------------------
 
     public boolean isOutOfBoundsX() {
         return (getPositionX() + getWidth() < 0) || getPositionX() > MainActivity.getScreenWidth();
@@ -109,9 +119,8 @@ public abstract class GameObject {
         return isOutOfBoundsX() || isOutOfBoundsY();
     }
 
-    public boolean collidesWith(GameObject obj) {
-        return Rect.intersects(getRect(), obj.getRect());
-    }
+
+    // Calculations Between Objects -----------------------------------------
 
     public float getDistanceFrom(GameObject obj) {
         return (float) Math.hypot((getCenterX() - obj.getCenterX()), (getCenterY() - obj.getCenterY()));
@@ -121,13 +130,14 @@ public abstract class GameObject {
         return (float) ((float) Math.atan2(getPositionY() - obj.getPositionY(), obj.getPositionX() - getPositionX()) * 180 / Math.PI);
     }
 
-    // Draw updates
-    public void updatePosition() {
-        matrix.postTranslate(positionX, positionY);
+
+    // Collision Detection -----------------------------------------
+
+    public boolean collidesWith(GameObject obj) {
+        return Rect.intersects(getRect(), obj.getRect());
     }
 
-    public void updateDegrees() {
-        matrix.setRotate(-degrees, (float) getWidth() / 2, (float) getHeight() / 2);
+    public boolean isRigid() {
+        return this.rigid;
     }
-
 }

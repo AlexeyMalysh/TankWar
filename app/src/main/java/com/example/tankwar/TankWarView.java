@@ -30,28 +30,39 @@ import java.util.stream.Stream;
 
 public class TankWarView extends SurfaceView implements Runnable {
 
+    private final Context context;
     private Thread gameThread = null;
-    private SurfaceHolder ourHolder;
+    private final SurfaceHolder ourHolder;
+    private final Paint paint;
     private volatile boolean playing;
     private boolean paused = false;
-    private Canvas canvas;
-    private Paint paint;
     public static long fps;
-    private long timeThisFrame;
-    private Player player;
-    private FireButton fireButton;
-    private Bitmap levelBg;
+
+    private final Joystick joystick;
+    private final FireButton fireButton;
     private DebugOverlay debugOverlay;
-    public static final boolean DEV_MODE = true;
+    private Bitmap levelBg;
+    private Player player;
     private EnemySpawner enemySpawner;
     private HealthBar healthBar;
     private PropList propList;
 
+    public static final boolean DEV_MODE = true;
+
     public TankWarView(Context context, Joystick joystick, FireButton fireButton) {
         super(context);
-
         ourHolder = getHolder();
         paint = new Paint();
+        this.context = context;
+        this.joystick = joystick;
+        this.fireButton = fireButton;
+
+        prepareLevel();
+    }
+
+    private void prepareLevel() {
+        levelBg = BitmapFactory.decodeResource(getResources(), R.drawable.level_bg);
+        levelBg = Bitmap.createScaledBitmap(levelBg, MainActivity.getScreenWidth(), MainActivity.getScreenHeight(), false);
 
         float centerX = (float) MainActivity.getScreenWidth() / 2;
         float centerY = (float) MainActivity.getScreenHeight() / 2;
@@ -68,10 +79,20 @@ public class TankWarView extends SurfaceView implements Runnable {
             debugOverlay = new DebugOverlay(joystick, player, enemySpawner, propList);
         }
 
-        this.fireButton = fireButton;
         initFireButton();
+    }
 
-        prepareLevel();
+    @SuppressLint("ClickableViewAccessibility")
+    private void initFireButton() {
+
+        fireButton.view.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                player.fire();
+                fireButton.toggle();
+            }
+
+            return true;
+        });
     }
 
     @Override
@@ -86,11 +107,18 @@ public class TankWarView extends SurfaceView implements Runnable {
 
             draw();
 
-            timeThisFrame = System.currentTimeMillis() - startFrameTime;
+            long timeThisFrame = System.currentTimeMillis() - startFrameTime;
+
             if (timeThisFrame >= 1) {
                 fps = 1000 / timeThisFrame;
             }
         }
+    }
+
+    public void resume() {
+        playing = true;
+        gameThread = new Thread(this);
+        gameThread.start();
     }
 
     public void pause() {
@@ -101,19 +129,6 @@ public class TankWarView extends SurfaceView implements Runnable {
             Log.e("Error:", "joining thread");
         }
     }
-
-    public void resume() {
-        playing = true;
-        gameThread = new Thread(this);
-        gameThread.start();
-    }
-
-
-    private void prepareLevel() {
-        levelBg = BitmapFactory.decodeResource(getResources(), R.drawable.level_bg);
-        levelBg = Bitmap.createScaledBitmap(levelBg, MainActivity.getScreenWidth(), MainActivity.getScreenHeight(), false);
-    }
-
 
     private void update() {
         ArrayList<GameObject> gameObjects = new ArrayList();
@@ -131,10 +146,10 @@ public class TankWarView extends SurfaceView implements Runnable {
 
         if (ourHolder.getSurface().isValid()) {
 
-            canvas = ourHolder.lockCanvas();
+            Canvas canvas = ourHolder.lockCanvas();
+
             canvas.drawBitmap(levelBg, 0, 0, paint);
 
-            // TODO: This needs ordered correctly
             for (Prop prop : propList.getProps()) {
                 prop.draw(canvas);
             }
@@ -158,21 +173,6 @@ public class TankWarView extends SurfaceView implements Runnable {
 
             ourHolder.unlockCanvasAndPost(canvas);
         }
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private void initFireButton() {
-
-        fireButton.view.setOnTouchListener((v, event) -> {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    player.fire();
-                    fireButton.toggle();
-                    return true;
-            }
-
-            return true;
-        });
     }
 
 }

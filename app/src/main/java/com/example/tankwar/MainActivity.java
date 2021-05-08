@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         return Math.round(Resources.getSystem().getDisplayMetrics().heightPixels);
     }
 
-
     public static int dpToPx(float dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, Resources.getSystem().getDisplayMetrics());
     }

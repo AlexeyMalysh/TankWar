@@ -7,6 +7,7 @@ import com.example.tankwar.GameObjects.GameObject;
 import com.example.tankwar.GameObjects.Player;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -17,8 +18,8 @@ public class EnemySpawner {
     private int enemiesPerWave = 1;
     private int enemiesDestroyed = 0;
     private CopyOnWriteArrayList<Enemy> enemies;
-    private Context context;
-    private Player player;
+    private final Context context;
+    private final Player player;
 
     public EnemySpawner(Context context, Player player) {
         this.enemies = new CopyOnWriteArrayList<>();
@@ -63,9 +64,7 @@ public class EnemySpawner {
 
     private void spawnEnemies() {
         // If at max enemies do not attempt to spawn more
-        if (enemies.size() >= maxEnemies) {
-            return;
-        }
+        if (enemies.size() >= maxEnemies) return;
 
         int enemiesToAdd;
 
@@ -73,7 +72,7 @@ public class EnemySpawner {
         if (enemies.size() + enemiesPerWave <= maxEnemies) {
             enemiesToAdd = enemiesPerWave;
         } else {
-            // If unable to add full wave of enemies add remainder of enemies to reach max amount of enemies
+            // If unable to add full wave of enemies, add remainder of enemies to reach max amount of enemies
             enemiesToAdd = maxEnemies - enemies.size();
         }
 
@@ -83,11 +82,8 @@ public class EnemySpawner {
     }
 
     private void spawn() {
-        enemies.add(new Enemy(context, player));
-    }
-
-    public CopyOnWriteArrayList<Enemy> getEnemies() {
-        return this.enemies;
+        float[] coords = generateSpawnCoords();
+        enemies.add(new Enemy(context, player, coords[0], coords[1]));
     }
 
     private void incrementWave() {
@@ -101,6 +97,10 @@ public class EnemySpawner {
         maxEnemies += 1;
     }
 
+    public CopyOnWriteArrayList<Enemy> getEnemies() {
+        return this.enemies;
+    }
+
     public void setEnemies(CopyOnWriteArrayList<Enemy> enemies) {
         this.enemies = enemies;
     }
@@ -111,6 +111,42 @@ public class EnemySpawner {
 
     public int getEnemiesPerWave() {
         return enemiesPerWave;
+    }
+
+    private float[] generateSpawnCoords() {
+        Random rand = new Random();
+
+        int n = rand.nextInt(4);
+
+        int x;
+        int y;
+
+        switch (n) {
+            case 0:
+                //Enemy will spawn at top
+                x = rand.nextInt(MainActivity.getScreenWidth());
+                y = MainActivity.getScreenHeight() + 100;
+                break;
+            case 1:
+                // Enemy will spawn at bottom
+                x = rand.nextInt(MainActivity.getScreenWidth());
+                y = -100;
+                break;
+            case 2:
+                // Enemy will spawn at left
+                x = -100;
+                y = rand.nextInt(MainActivity.getScreenHeight());
+                break;
+            case 3:
+                // Enemy will spawn at right
+                x = MainActivity.getScreenWidth() + 100;
+                y = rand.nextInt(MainActivity.getScreenHeight());
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + n);
+        }
+
+        return new float[]{x, y};
     }
 
 }

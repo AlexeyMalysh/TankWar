@@ -18,7 +18,7 @@ public class DebugOverlay {
     private final Paint paint;
     private final Joystick joystick;
     private final Player player;
-    private EnemySpawner enemySpawner;
+    private final EnemySpawner enemySpawner;
     private final PropList propList;
 
     public DebugOverlay(Joystick joystick, Player player, EnemySpawner enemySpawner, PropList propList) {

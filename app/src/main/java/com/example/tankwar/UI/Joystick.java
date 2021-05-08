@@ -6,29 +6,23 @@ import io.github.controlwear.virtual.joystick.android.JoystickView;
 
 public class Joystick {
 
-    private static final int THRESHOLD = 0;
-    private final int LOOP_INTERVAL = 8;
-    private final float BACKGROUND_RATIO = 0.5f;
-    private final float BUTTON_RATIO = 0.5f;
+    private static final int threshold = 0;
     private float positionX = 1;
     private float positionY = 0;
     private int degrees = 0;
     private int strength = 0;
-    private JoystickView joystick;
-
 
     public Joystick(JoystickView joystickView) {
+        int loopInterval = 8;
 
-        joystick = joystickView;
+        joystickView.setOnMoveListener(this::update, loopInterval);
 
-        joystick.setOnMoveListener(this::update, LOOP_INTERVAL);
-
-        if (joystick.getParent() != null) {
-            ((ViewGroup) joystick.getParent()).removeView(joystick);
+        if (joystickView.getParent() != null) {
+            ((ViewGroup) joystickView.getParent()).removeView(joystickView);
         }
 
-        joystick.setBackgroundSizeRatio(BACKGROUND_RATIO);
-        joystick.setButtonSizeRatio(BUTTON_RATIO);
+        joystickView.setBackgroundSizeRatio(0.5f);
+        joystickView.setButtonSizeRatio(0.5f);
     }
 
     public float getPositionX() {
@@ -52,7 +46,7 @@ public class Joystick {
         this.strength = strength;
 
         // Prevents updates if player is not touching joystick
-        if (this.strength <= THRESHOLD) return;
+        if (this.strength <= threshold) return;
 
         this.degrees = degrees;
 
