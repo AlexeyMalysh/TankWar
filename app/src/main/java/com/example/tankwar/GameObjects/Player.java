@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.example.tankwar.R;
 import com.example.tankwar.UI.Joystick;
 import com.example.tankwar.MainActivity;
 
@@ -41,10 +40,10 @@ public class Player extends Tank {
 
     public void update(List<GameObject> objects) {
 
-        // Don't update if player has been destroyed
+        // Don't update if player has been disposed
         if (isDisposed()) return;
 
-        // Only update player if user is touching joystick
+        // Only update player position if user is touching joystick
         if (joystick.getStrength() > 0) {
             setDegrees(joystick.getDegrees());
             setPositionX(getPositionX() + (calculateRadianX() * getSpeed() / fps));

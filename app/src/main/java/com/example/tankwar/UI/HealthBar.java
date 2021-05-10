@@ -1,12 +1,10 @@
 package com.example.tankwar.UI;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.TypedValue;
 
 import com.example.tankwar.GameObjects.Player;
 import com.example.tankwar.MainActivity;

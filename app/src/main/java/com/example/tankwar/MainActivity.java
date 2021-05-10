@@ -2,10 +2,10 @@ package com.example.tankwar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -61,13 +61,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(layout);
     }
 
-
     // This method executes when the player starts the game
     @Override
     protected void onResume() {
         super.onResume();
 
-        // Tell the gameView resume method to execute
         tankWarView.resume();
     }
 
@@ -76,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        // Tell the gameView pause method to execute
         tankWarView.pause();
     }
 

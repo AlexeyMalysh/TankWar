@@ -24,12 +24,8 @@ import com.example.tankwar.UI.Joystick;
 import com.example.tankwar.UI.Score;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Stream;
 
 public class TankWarView extends SurfaceView implements Runnable {
 

@@ -2,9 +2,6 @@ package com.example.tankwar.GameObjects;
 
 import android.content.Context;
 
-import com.example.tankwar.MainActivity;
-import com.example.tankwar.R;
-
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
@@ -113,7 +110,7 @@ public class Enemy extends Tank {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if (firing) fire();
+                if (firing && !player.isDisposed()) fire();
             }
         }, mix, fireRate);
     }
