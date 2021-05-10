@@ -26,6 +26,8 @@ import com.example.tankwar.UI.Score;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
@@ -38,6 +40,7 @@ public class TankWarView extends SurfaceView implements Runnable {
     private volatile boolean playing;
     private boolean paused = false;
     public static long fps;
+    private boolean endPlaying = false;
 
     private final Joystick joystick;
     private final FireButton fireButton;
@@ -49,7 +52,7 @@ public class TankWarView extends SurfaceView implements Runnable {
     private EnemySpawner enemySpawner;
     private PropList propList;
 
-    public static final boolean DEV_MODE = false;
+    public static final boolean DEV_MODE = true;
 
     public TankWarView(Context context, Joystick joystick, FireButton fireButton) {
         super(context);
@@ -144,6 +147,24 @@ public class TankWarView extends SurfaceView implements Runnable {
         player.update(gameObjects);
         enemySpawner.update(gameObjects);
         propList.update();
+
+        if(player.getHealth() == 0 && !endPlaying) {
+            // This flag is used so gameOver isn't run indefinitely until the playing timer ends
+            endPlaying = true;
+            gameOver();
+        }
+
+
+    }
+
+    private void gameOver() {
+        player.destroy();
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                playing = false;
+            }
+        }, 5000);
     }
 
     private void draw() {

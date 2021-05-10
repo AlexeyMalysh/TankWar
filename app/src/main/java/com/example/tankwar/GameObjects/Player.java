@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.example.tankwar.R;
 import com.example.tankwar.UI.Joystick;
 import com.example.tankwar.MainActivity;
 
@@ -19,7 +20,7 @@ public class Player extends Tank {
     private final Joystick joystick;
     private final Paint paint;
     private int score = 0;
-    private int health = 3;
+    private int health = 1;
     public final int invulnerabilityTime = 1500;
     private boolean invulnerable = false;
 
@@ -39,6 +40,10 @@ public class Player extends Tank {
     }
 
     public void update(List<GameObject> objects) {
+
+        // Don't update if player has been destroyed
+        if (isDisposed()) return;
+
         // Only update player if user is touching joystick
         if (joystick.getStrength() > 0) {
             setDegrees(joystick.getDegrees());

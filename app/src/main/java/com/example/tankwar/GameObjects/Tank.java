@@ -41,9 +41,14 @@ public abstract class Tank extends GameObject {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                disposed = true;
+                setBitmap(R.drawable.tank_empty);
+                dispose();
             }
         }, 150);
+    }
+
+    public void dispose() {
+        disposed = true;
     }
 
     public boolean isDisposed() {
