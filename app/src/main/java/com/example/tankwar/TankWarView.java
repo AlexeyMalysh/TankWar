@@ -21,6 +21,7 @@ import com.example.tankwar.UI.DebugOverlay;
 import com.example.tankwar.UI.FireButton;
 import com.example.tankwar.UI.HealthBar;
 import com.example.tankwar.UI.Joystick;
+import com.example.tankwar.UI.Score;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,12 +43,13 @@ public class TankWarView extends SurfaceView implements Runnable {
     private final FireButton fireButton;
     private DebugOverlay debugOverlay;
     private Bitmap levelBg;
+    private HealthBar healthBar;
+    private Score score;
     private Player player;
     private EnemySpawner enemySpawner;
-    private HealthBar healthBar;
     private PropList propList;
 
-    public static final boolean DEV_MODE = true;
+    public static final boolean DEV_MODE = false;
 
     public TankWarView(Context context, Joystick joystick, FireButton fireButton) {
         super(context);
@@ -70,6 +72,8 @@ public class TankWarView extends SurfaceView implements Runnable {
         player = new Player(context, joystick, centerX, centerY);
 
         healthBar = new HealthBar(context, player);
+
+        score = new Score(context, player);
 
         enemySpawner = new EnemySpawner(context, player);
 
@@ -168,6 +172,7 @@ public class TankWarView extends SurfaceView implements Runnable {
             }
 
             healthBar.draw(canvas);
+            score.draw(canvas);
 
             if (DEV_MODE) debugOverlay.draw(canvas);
 
