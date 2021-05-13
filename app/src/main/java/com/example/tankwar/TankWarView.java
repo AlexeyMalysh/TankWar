@@ -48,21 +48,24 @@ public class TankWarView extends SurfaceView implements Runnable {
     private EnemySpawner enemySpawner;
     private PropList propList;
 
-    public static final boolean DEV_MODE = true;
+    private MainActivity activity;
 
-    public TankWarView(Context context, Joystick joystick, FireButton fireButton) {
+    public static final boolean DEV_MODE = false;
+
+    public TankWarView(Context context, Joystick joystick, FireButton fireButton, MainActivity activity) {
         super(context);
         ourHolder = getHolder();
         paint = new Paint();
         this.context = context;
         this.joystick = joystick;
         this.fireButton = fireButton;
+        this.activity = activity;
 
         prepareLevel();
     }
 
     private void prepareLevel() {
-        levelBg = BitmapFactory.decodeResource(getResources(), R.drawable.level_bg);
+        levelBg = BitmapFactory.decodeResource(getResources(), R.drawable.level_1);
         levelBg = Bitmap.createScaledBitmap(levelBg, MainActivity.getScreenWidth(), MainActivity.getScreenHeight(), false);
 
         float centerX = (float) MainActivity.getScreenWidth() / 2;
@@ -144,7 +147,7 @@ public class TankWarView extends SurfaceView implements Runnable {
         enemySpawner.update(gameObjects);
         propList.update();
 
-        if(player.getHealth() == 0 && !endPlaying) {
+        if (player.getHealth() == 0 && !endPlaying) {
             // This flag is used so gameOver isn't run indefinitely until the playing timer ends
             endPlaying = true;
             gameOver();
@@ -159,6 +162,7 @@ public class TankWarView extends SurfaceView implements Runnable {
             @Override
             public void run() {
                 playing = false;
+                activity.gameOver();
             }
         }, 5000);
     }

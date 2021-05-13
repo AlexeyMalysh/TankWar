@@ -9,15 +9,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TankWar">
-        <activity android:name=".TitleScreenActivity">
+        <activity
+            android:name=".GameOverActivity"
+            android:screenOrientation="landscape"
+            android:noHistory="true"
+            ></activity>
+        <activity
+            android:name=".TitleScreenActivity"
+            android:screenOrientation="landscape"
+            android:noHistory="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
-
-        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:noHistory="true"
+            />
     </application>
 
 </manifest>

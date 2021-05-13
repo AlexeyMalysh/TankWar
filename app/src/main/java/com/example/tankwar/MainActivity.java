@@ -6,9 +6,13 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.tankwar.UI.FireButton;
@@ -21,6 +25,7 @@ import io.github.controlwear.virtual.joystick.android.JoystickView;
 public class MainActivity extends AppCompatActivity {
 
     TankWarView tankWarView;
+    private RelativeLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Allows two views on same layout
-        RelativeLayout layout = new RelativeLayout(getApplicationContext());
+        layout = new RelativeLayout(getApplicationContext());
 
         // Init joystick
         JoystickView joystickView = findViewById(R.id.joystickView_left);
@@ -50,12 +55,13 @@ public class MainActivity extends AppCompatActivity {
         FireButton fireButton = new FireButton(fireButtonView);
 
         // Init game
-        tankWarView = new TankWarView(getApplicationContext(), joystick, fireButton);
+        tankWarView = new TankWarView(getApplicationContext(), joystick, fireButton, this);
 
         // Add views
         layout.addView(tankWarView);
         layout.addView(joystickView);
         layout.addView(fireButtonView);
+
 
         // Update layout
         setContentView(layout);
@@ -77,6 +83,11 @@ public class MainActivity extends AppCompatActivity {
         tankWarView.pause();
     }
 
+    public void gameOver() {
+        Intent intent = new Intent(this, GameOverActivity.class);
+        startActivity(intent);
+    }
+
     public static int getScreenWidth() {
         return Math.round(Resources.getSystem().getDisplayMetrics().widthPixels);
     }
@@ -92,5 +103,6 @@ public class MainActivity extends AppCompatActivity {
     public static float getDensity() {
         return Resources.getSystem().getDisplayMetrics().density;
     }
+
 
 }

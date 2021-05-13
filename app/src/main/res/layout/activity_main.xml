@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:clipChildren="false"
     tools:context=".MainActivity"
-    android:id="@+id/myLayout"
+    android:id="@+id/main"
     android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
     >
 

@@ -16,32 +16,35 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="0dp"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/level_bg" />
+        app:srcCompat="@drawable/level_1" />
 
-    <ImageView
-        android:id="@+id/tankWar"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="70dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="135dp"
-        app:srcCompat="@drawable/title_text"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
 
-    <ImageButton
-        android:id="@+id/startButton"
-        android:layout_width="183dp"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="215dp"
-        android:background="@null"
-        android:onClick="game"
-        android:scaleType="fitCenter"
-        app:srcCompat="@drawable/start_button"
+        <ImageView
+            android:id="@+id/tankWar"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/title_text" />
 
-        />
+        <ImageButton
+            android:id="@+id/startButton"
+            android:layout_width="183dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="80dp"
+            android:background="@null"
+            android:onClick="startGame"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/start_button" />
+
+    </RelativeLayout>
+
 
 </RelativeLayout>
