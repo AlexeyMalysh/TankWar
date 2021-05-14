@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,6 +103,17 @@ public class MainActivity extends AppCompatActivity {
 
     public static float getDensity() {
         return Resources.getSystem().getDisplayMetrics().density;
+    }
+
+    public static boolean isTablet() {
+
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+
+        float yInches = metrics.heightPixels / metrics.ydpi;
+        float xInches = metrics.widthPixels / metrics.xdpi;
+        double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
+
+        return diagonalInches >= 10;
     }
 
 

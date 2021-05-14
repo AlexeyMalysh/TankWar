@@ -1,7 +1,9 @@
 package com.example.tankwar.GameObjects;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
+import com.example.tankwar.MainActivity;
 import com.example.tankwar.R;
 
 import java.util.Timer;
@@ -17,13 +19,14 @@ public abstract class Tank extends GameObject {
     private TankType type;
     private boolean disposed = false;
     protected float speed;
+    private int scaledWidth = 18;
 
     public Tank(Context context, TankType type, float positionX, float positionY) {
         super(context, positionX, positionY, true);
         this.context = context;
         this.type = type;
 
-        setBitmap(getTankBitmapId(type));
+        setBitmap(getTankBitmapId(type), scaledWidth);
     }
 
     protected void stop() {
@@ -41,7 +44,7 @@ public abstract class Tank extends GameObject {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                setBitmap(R.drawable.tank_empty);
+                setBitmap(R.drawable.tank_empty, scaledWidth);
                 dispose();
             }
         }, 150);
@@ -76,7 +79,6 @@ public abstract class Tank extends GameObject {
         }
         return 0;
     }
-
 
     protected float getSpeed() {
         return this.speed;

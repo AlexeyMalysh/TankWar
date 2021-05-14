@@ -19,7 +19,7 @@ public class Player extends Tank {
     private final Joystick joystick;
     private final Paint paint;
     private int score = 0;
-    private int health = 1;
+    private int health = 3;
     public final int invulnerabilityTime = 1500;
     private boolean invulnerable = false;
 

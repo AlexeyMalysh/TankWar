@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 import com.example.tankwar.MainActivity;
+import com.example.tankwar.R;
 
 public abstract class GameObject {
     protected Context context;
@@ -28,9 +29,28 @@ public abstract class GameObject {
         this.rigid = rigid;
     }
 
-    public void setBitmap(int id) {
+    public void setBitmap(int id, int scaledWidth) {
         this.bitmap = BitmapFactory.decodeResource(context.getResources(), id);
-        this.bitmap = Bitmap.createScaledBitmap(bitmap, (int) (bitmap.getWidth() / 2), (int) (bitmap.getHeight() / 2), false);
+        this.bitmap = scale(bitmap, MainActivity.getScreenWidth() / scaledWidth, 100000);
+    }
+
+    private Bitmap scale(Bitmap image, int maxWidth, int maxHeight) {
+        if (maxHeight > 0 && maxWidth > 0) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            float ratioBitmap = (float) width / (float) height;
+            float ratioMax = (float) maxWidth / (float) maxHeight;
+
+            int finalWidth = maxWidth;
+            int finalHeight = maxHeight;
+            if (ratioMax > ratioBitmap) {
+                finalWidth = (int) ((float)maxHeight * ratioBitmap);
+            } else {
+                finalHeight = (int) ((float)maxWidth / ratioBitmap);
+            }
+            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
+        }
+        return image;
     }
 
     public void draw(Canvas canvas) {
@@ -140,4 +160,10 @@ public abstract class GameObject {
     public boolean isRigid() {
         return this.rigid;
     }
+
+
+
+
+
+
 }

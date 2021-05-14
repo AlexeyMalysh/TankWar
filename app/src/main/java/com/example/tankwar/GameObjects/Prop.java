@@ -8,17 +8,9 @@ import com.example.tankwar.MainActivity;
 public class Prop extends GameObject {
 
     public Prop(Context context, float positionX, float positionY, int bitmapId, boolean rigid) {
-        super(context, MainActivity.dpToPx(positionX), MainActivity.dpToPx(positionY), rigid);
+        super(context, positionX, positionY, rigid);
         this.rigid = rigid;
-        setBitmap(bitmapId);
-        update();
-    }
-
-    public Prop(Context context, float positionX, float positionY, int degrees, int bitmapId, boolean rigid) {
-        super(context, MainActivity.dpToPx(positionX), MainActivity.dpToPx(positionY), rigid);
-        this.rigid = rigid;
-        setBitmap(bitmapId);
-        setDegrees(degrees);
+        setBitmap(bitmapId, 12);
         update();
     }
 

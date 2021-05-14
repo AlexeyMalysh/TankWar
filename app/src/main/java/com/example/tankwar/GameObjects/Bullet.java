@@ -2,6 +2,7 @@ package com.example.tankwar.GameObjects;
 
 import android.content.Context;
 
+import com.example.tankwar.MainActivity;
 import com.example.tankwar.R;
 
 import java.util.Timer;
@@ -16,13 +17,14 @@ public class Bullet extends GameObject {
     private final float radianY;
     private boolean active = true;
     private boolean disposed = false;
+    private final int scaledWidth = 54;
 
     public Bullet(Context context, Tank tank) {
         super(context, tank.getPositionX(), tank.getPositionY(), false);
 
         this.speed = tank.getSpeed() * 5;
 
-        setBitmap(getBulletBitmapId(tank.getType()));
+        setBitmap(getBulletBitmapId(tank.getType()), scaledWidth);
 
         this.radianX = tank.calculateRadianX();
         this.radianY = tank.calculateRadianY();
@@ -59,7 +61,7 @@ public class Bullet extends GameObject {
         active = false;
 
         // Initially set to final explosion to get width
-        setBitmap(R.drawable.explosion2);
+        setBitmap(R.drawable.explosion2, scaledWidth / 4);
 
         // Place explosion in center of target that was hit
         float centerX = objHit.getCenterX() - (float) getWidth() / 2;
@@ -77,13 +79,13 @@ public class Bullet extends GameObject {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                setBitmap(R.drawable.explosion1);
+                setBitmap(R.drawable.explosion1, scaledWidth / 4);
             }
         }, 0);
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                setBitmap(R.drawable.explosion2);
+                setBitmap(R.drawable.explosion2, scaledWidth / 4);
             }
         }, 100);
 
