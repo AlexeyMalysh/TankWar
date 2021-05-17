@@ -89,6 +89,8 @@ public class Player extends Tank {
     }
 
 
+
+
     public void checkBounds() {
         if (isOutOfBoundsX()) {
             if (getPositionX() > 1) {

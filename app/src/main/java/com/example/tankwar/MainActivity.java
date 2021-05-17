@@ -84,8 +84,9 @@ public class MainActivity extends AppCompatActivity {
         tankWarView.pause();
     }
 
-    public void gameOver() {
+    public void gameOver(int score) {
         Intent intent = new Intent(this, GameOverActivity.class);
+        intent.putExtra("SCORE", score);
         startActivity(intent);
     }
 
@@ -103,17 +104,6 @@ public class MainActivity extends AppCompatActivity {
 
     public static float getDensity() {
         return Resources.getSystem().getDisplayMetrics().density;
-    }
-
-    public static boolean isTablet() {
-
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-
-        float yInches = metrics.heightPixels / metrics.ydpi;
-        float xInches = metrics.widthPixels / metrics.xdpi;
-        double diagonalInches = Math.sqrt(xInches * xInches + yInches * yInches);
-
-        return diagonalInches >= 10;
     }
 
 

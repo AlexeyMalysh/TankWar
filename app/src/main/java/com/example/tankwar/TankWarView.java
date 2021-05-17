@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -60,6 +61,8 @@ public class TankWarView extends SurfaceView implements Runnable {
         this.joystick = joystick;
         this.fireButton = fireButton;
         this.activity = activity;
+
+
 
         prepareLevel();
     }
@@ -162,7 +165,7 @@ public class TankWarView extends SurfaceView implements Runnable {
             @Override
             public void run() {
                 playing = false;
-                activity.gameOver();
+                activity.gameOver(player.getScore());
             }
         }, 5000);
     }

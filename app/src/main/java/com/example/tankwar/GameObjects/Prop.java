@@ -7,10 +7,10 @@ import com.example.tankwar.MainActivity;
 // Used for trees, barricades, etc
 public class Prop extends GameObject {
 
-    public Prop(Context context, float positionX, float positionY, int bitmapId, boolean rigid) {
-        super(context, positionX, positionY, rigid);
+    public Prop(Context context, int scaledWidth, float col, float row, int bitmapId, boolean rigid) {
+        super(context, MainActivity.getScreenWidth() / 16 * col, MainActivity.getScreenHeight() / 16 * row, rigid);
         this.rigid = rigid;
-        setBitmap(bitmapId, 12);
+        setBitmap(bitmapId, scaledWidth);
         update();
     }
 

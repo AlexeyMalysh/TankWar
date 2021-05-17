@@ -142,14 +142,9 @@ public abstract class GameObject {
 
     // Calculations Between Objects -----------------------------------------
 
-    public float getDistanceFrom(GameObject obj) {
-        return (float) Math.hypot((getCenterX() - obj.getCenterX()), (getCenterY() - obj.getCenterY()));
-    }
-
     public float getDegreesFrom(GameObject obj) {
         return (float) ((float) Math.atan2(getPositionY() - obj.getPositionY(), obj.getPositionX() - getPositionX()) * 180 / Math.PI);
     }
-
 
     // Collision Detection -----------------------------------------
 
@@ -161,9 +156,6 @@ public abstract class GameObject {
         return this.rigid;
     }
 
-
-
-
-
-
 }
+
+
