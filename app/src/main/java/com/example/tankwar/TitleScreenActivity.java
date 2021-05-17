@@ -25,9 +25,6 @@ public class TitleScreenActivity extends AppCompatActivity {
         this.getSupportActionBar().hide();
 
         appState = ((GlobalState) getApplicationContext());
-
-        Log.d("MUSIC", String.valueOf(appState.musicEnabled()));
-
         initMusicButton();
     }
 
